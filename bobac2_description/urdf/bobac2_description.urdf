@@ -1,0 +1,1195 @@
+<robot
+  name="bobac2_description">
+
+  <link name="base_footprint">
+    <visual>
+      <geometry>
+        <box
+         size="0.001 0.001 0.001"/>
+      </geometry>
+	<origin
+	 rpy="0 0 0" xyz="0 0 0.16575"/>
+    </visual>
+    <inertial>
+      <mass
+       value="0.0001" />
+        <inertia
+         ixx="1.0E-10"
+         ixy="0.0"
+         ixz="0.0"
+         iyy="1.0E-10" 
+         iyz="0.0"
+         izz="1.0E-10" />
+        </inertial>
+  </link>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <origin xyz="0 0 0.16575" />
+      <parent link="base_footprint" />
+        <child link="base_link" />
+  </joint>
+
+
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.0176984736856291 -0.00244021237194778 0.0154147582080695"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0.0334350159358739"
+        ixy="-7.36145654595537E-05"
+        ixz="0.00399635162520499"
+        iyy="0.031161816239251"
+        iyz="0.000145992979543746"
+        izz="0.0234882250069953" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.5 0.12 0.13 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="left_wheel_Link">
+    <inertial>
+      <origin
+        xyz="0.000187738776794025 2.27799696567166E-05 0.000104915722079227"
+        rpy="0 0 0" />
+      <mass
+        value="10" />
+      <inertia
+        ixx="0.000373831677394111"
+        ixy="1.10646247745684E-09"
+        ixz="3.94610908511871E-07"
+        iyy="0.00072344628711892"
+        iyz="6.18334218221144E-10"
+        izz="0.000374260455949215" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/left_wheel_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29 0.29 0.29 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/left_wheel_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_wheel_Joint"
+    type="continuous">
+    <origin
+      xyz="0.059 0.162869999999998 -0.0809999999999997"
+      rpy="-6.12303176911189E-17 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_wheel_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="right_wheel_Link">
+    <inertial>
+      <origin
+        xyz="0.000104915722079241 -2.27799696567443E-05 0.000187738776793983"
+        rpy="0 0 0" />
+      <mass
+        value="10" />
+      <inertia
+        ixx="0.000374260455949215"
+        ixy="-6.18334218208078E-10"
+        ixz="3.94610908512163E-07"
+        iyy="0.00072344628711892"
+        iyz="-1.10646247743939E-09"
+        izz="0.000373831677394111" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/right_wheel_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29 0.29 0.29 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/right_wheel_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_wheel_Joint"
+    type="continuous">
+    <origin
+      xyz="0.0589999999999999 -0.162870230062147 -0.0809999999999994"
+      rpy="-6.12303176911189E-17 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_wheel_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="ult1_Link">
+    <inertial>
+      <origin
+        xyz="-0.00414742898874126 6.82855136189154E-06 -0.00438502040194252"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="1.77535070730389E-05"
+        ixy="1.09142764249358E-09"
+        ixz="-2.19926889304616E-07"
+        iyy="1.13252586353444E-05"
+        iyz="-7.32159566906318E-10"
+        izz="7.51538320265679E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult1_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult1_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ult1_Joint"
+    type="fixed">
+    <origin
+      xyz="0.161036475920901 -0.00055454043235868 0.0450000000000007"
+      rpy="-6.12303176911189E-17 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="ult1_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ult2_Link">
+    <inertial>
+      <origin
+        xyz="-0.00414742898874126 6.82855136185934E-06 -0.00438502040194252"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="1.77535070730389E-05"
+        ixy="1.09142764249631E-09"
+        ixz="-2.19926889304611E-07"
+        iyy="1.13252586353444E-05"
+        iyz="-7.32159566909851E-10"
+        izz="7.51538320265679E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult2_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult2_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ult2_Joint"
+    type="fixed">
+    <origin
+      xyz="0.0796102415563129 -0.143139258755043 0.0450000000000008"
+      rpy="-3.06151588455595E-17 -5.30270106023007E-17 -1.0471975511966" />
+    <parent
+      link="base_link" />
+    <child
+      link="ult2_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ult3_Link">
+    <inertial>
+      <origin
+        xyz="-0.00414742898874132 6.82855136184546E-06 -0.00438502040194253"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="1.77535070730388E-05"
+        ixy="1.09142764249377E-09"
+        ixz="-2.19926889304615E-07"
+        iyy="1.13252586353444E-05"
+        iyz="-7.32159566904385E-10"
+        izz="7.51538320265676E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult3_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult3_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ult3_Joint"
+    type="fixed">
+    <origin
+      xyz="-0.0825156701834676 -0.141461808755045 0.0450000000000007"
+      rpy="3.06151588455591E-17 -5.30270106023009E-17 -2.09439510239319" />
+    <parent
+      link="base_link" />
+    <child
+      link="ult3_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ult4_Link">
+    <inertial>
+      <origin
+        xyz="-0.00414742898874126 6.82855136188807E-06 -0.00438502040194251"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="1.77535070730389E-05"
+        ixy="1.0914276424907E-09"
+        ixz="-2.19926889304616E-07"
+        iyy="1.13252586353444E-05"
+        iyz="-7.32159566912778E-10"
+        izz="7.51538320265679E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult4_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult4_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ult4_Joint"
+    type="fixed">
+    <origin
+      xyz="-0.160937935521329 0.00056375956763879 0.0450000000000008"
+      rpy="6.12303176911189E-17 0 3.14159265358979" />
+    <parent
+      link="base_link" />
+    <child
+      link="ult4_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ult5_Link">
+    <inertial>
+      <origin
+        xyz="-0.00414742898874129 6.82855136185934E-06 -0.00438502040194252"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="1.77535070730389E-05"
+        ixy="1.09142764249716E-09"
+        ixz="-2.19926889304613E-07"
+        iyy="1.13252586353444E-05"
+        iyz="-7.32159566911823E-10"
+        izz="7.51538320265677E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult5_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult5_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ult5_Joint"
+    type="fixed">
+    <origin
+      xyz="-0.0796102415563151 0.143139258755043 0.0450000000000007"
+      rpy="3.06151588455595E-17 5.30270106023006E-17 2.0943951023932" />
+    <parent
+      link="base_link" />
+    <child
+      link="ult5_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ult6_Link">
+    <inertial>
+      <origin
+        xyz="-0.00414742898874126 6.82855136187321E-06 -0.00438502040194252"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="1.77535070730389E-05"
+        ixy="1.0914276424908E-09"
+        ixz="-2.19926889304616E-07"
+        iyy="1.13252586353444E-05"
+        iyz="-7.321595669078E-10"
+        izz="7.51538320265678E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult6_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/ult6_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ult6_Joint"
+    type="fixed">
+    <origin
+      xyz="0.082515670183469 0.141461808755047 0.0450000000000007"
+      rpy="-3.06151588455591E-17 5.30270106023009E-17 1.0471975511966" />
+    <parent
+      link="base_link" />
+    <child
+      link="ult6_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="screen_Link">
+    <inertial>
+      <origin
+        xyz="-0.00930826314117272 0.000220505445777179 -0.00733047519436178"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0.00996841164107054"
+        ixy="1.82016646767447E-06"
+        ixz="-4.85112975934549E-05"
+        iyy="0.00339958653515132"
+        iyz="-4.56066805391674E-06"
+        izz="0.00667917473822529" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/screen_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.92 0.94 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/screen_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="screen_Joint"
+    type="fixed">
+    <origin
+      xyz="0.0295730580787732 0 0.28512473814545"
+      rpy="-8.65927457071926E-17 -0.785398163397438 6.12303176911176E-17" />
+    <parent
+      link="base_link" />
+    <child
+      link="screen_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="monocular_camera_Link">
+    <inertial>
+      <origin
+        xyz="0.00117676930382202 -0.000116627151779461 -0.000140554036882512"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="9.02372585847254E-06"
+        ixy="-1.26364197897344E-09"
+        ixz="-1.08147027028177E-08"
+        iyy="2.37546671460094E-06"
+        iyz="-3.41212699045368E-11"
+        izz="7.94280946232793E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/monocular_camera_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/monocular_camera_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="monocular_camera_Joint"
+    type="fixed">
+    <origin
+      xyz="-0.0020000000000002 0 0.125246207448554"
+      rpy="0 0 0" />
+    <parent
+      link="screen_Link" />
+    <child
+      link="monocular_camera_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="universal_wheel_bracket_Link">
+    <inertial>
+      <origin
+        xyz="4.9559662974083E-05 5.58346683326216E-16 -0.00925390687826176"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="6.45362207207313E-05"
+        ixy="-2.54975856993725E-20"
+        ixz="-8.40084689509949E-09"
+        iyy="1.55168712535187E-05"
+        iyz="2.33328438560862E-20"
+        izz="6.96230827425124E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/universal_wheel_bracket_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.25 0.25 0.25 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/universal_wheel_bracket_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="universal_wheel_bracket_Joint"
+    type="fixed">
+    <origin
+      xyz="-0.104950963170751 0 -0.0694999999999998"
+      rpy="-6.12303176911189E-17 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="universal_wheel_bracket_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="child_universal_wheel_bracket_Link">
+    <inertial>
+      <origin
+        xyz="-0.0132106058472552 -3.12590106175973E-08 -0.0199503271526001"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="1.48172435673607E-05"
+        ixy="-1.29473901657123E-10"
+        ixz="-3.84330817853662E-06"
+        iyy="1.64859919560355E-05"
+        iyz="-1.5248194928995E-10"
+        izz="1.58433370547712E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/child_universal_wheel_bracket_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.25 0.25 0.25 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/child_universal_wheel_bracket_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="child_universal_wheel_bracket_joint"
+    type="continuous">
+    <origin
+      xyz="-0.00249999999999975 0 -0.00499999999999662"
+      rpy="0 0 0" />
+    <parent
+      link="universal_wheel_bracket_Link" />
+    <child
+      link="child_universal_wheel_bracket_Link" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="universal_wheel_Link">
+    <inertial>
+      <origin
+        xyz="0 -4.94237839882406E-17 1.38777878078145E-17"
+        rpy="0 0 0" />
+      <mass
+        value="10" />
+      <inertia
+        ixx="1.08698483532136E-05"
+        ixy="4.27928103560766E-22"
+        ixz="-3.84694130211328E-22"
+        iyy="1.60607435321959E-05"
+        iyz="1.07643770380234E-22"
+        izz="1.08698483532136E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/universal_wheel_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.25 0.25 0.25 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/universal_wheel_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="universal_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="-0.032 0 -0.05"
+      rpy="0 0 0" />
+    <parent
+      link="child_universal_wheel_bracket_Link" />
+    <child
+      link="universal_wheel_Link" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="battery_Link">
+    <inertial>
+      <origin
+        xyz="-1.09268285031217E-07 0.00452506786560223 0.0219985739875884"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0.000410684216749952"
+        ixy="-3.19547301330829E-11"
+        ixz="5.81742352235315E-10"
+        iyy="7.59397052758553E-05"
+        iyz="-4.92787405480774E-10"
+        izz="0.000407561530163945" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/battery_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/battery_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="battery_Joint"
+    type="fixed">
+    <origin
+      xyz="-0.0799999999999998 -0.00499999999999998 0.00600000000000001"
+      rpy="2.55058561077215E-17 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="battery_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="control_box_Link">
+    <inertial>
+      <origin
+        xyz="0.000466671753558114 -0.00187600713548944 0.0214668133438353"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0.000967386431724335"
+        ixy="-5.01401566012094E-06"
+        ixz="1.34136901811671E-06"
+        iyy="0.000396896468708599"
+        iyz="-1.65897536172501E-06"
+        izz="0.00121761043099071" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/control_box_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.22 0.22 0.22 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/control_box_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="control_box_Joint"
+    type="fixed">
+    <origin
+      xyz="0.0272000000000001 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="control_box_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="right_crash_Link">
+    <inertial>
+      <origin
+        xyz="-0.00940575041859917 5.3136755827507E-05 0.0133604261588702"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="4.0319274598631E-05"
+        ixy="-6.92314498918265E-08"
+        ixz="1.64909317522797E-07"
+        iyy="6.17820313705541E-06"
+        iyz="-1.06794696112137E-09"
+        izz="4.0996557992296E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/right_crash_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.22 0.22 0.22 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/right_crash_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_crash_Joint"
+    type="fixed">
+    <origin
+      xyz="0.18405256283718 -0.121438087455977 -0.10375"
+      rpy="1.32969939710013E-15 -1.93890947636415E-17 -0.322204522551786" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_crash_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="middle_crash_Link">
+    <inertial>
+      <origin
+        xyz="-0.00877405027298528 5.31356895990319E-05 0.0133604261661488"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="4.03192755743805E-05"
+        ixy="-6.92311727907039E-08"
+        ixz="1.64909306987852E-07"
+        iyy="6.17820318486115E-06"
+        iyz="-1.068267577979E-09"
+        izz="4.09965589654731E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/middle_crash_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.22 0.22 0.22 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/middle_crash_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="middle_crash_Joint"
+    type="fixed">
+    <origin
+      xyz="0.2026764990859 0 -0.103749999999999"
+      rpy="-6.12303176911189E-17 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="middle_crash_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="left_crash_Link">
+    <inertial>
+      <origin
+        xyz="-0.00877405047744156 5.31367290457566E-05 0.0133604246678139"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="4.03192742314575E-05"
+        ixy="-6.92310561056219E-08"
+        ixz="1.64909671516585E-07"
+        iyy="6.1782030254675E-06"
+        iyz="-1.06903758342361E-09"
+        izz="4.09965577124893E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/left_crash_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.22 0.22 0.22 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/left_crash_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_crash_Joint"
+    type="fixed">
+    <origin
+      xyz="0.183453370344719 0.121238054341272 -0.10375"
+      rpy="-1.44585816446276E-15 1.93890947636384E-17 0.322204522551786" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_crash_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="laser_rada_Link">
+    <inertial>
+      <origin
+        xyz="-0.0012818819976308 -0.0122449902033269 -0.00613231546155353"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="7.6605683108143E-05"
+        ixy="7.14939668229038E-07"
+        ixz="3.31673498855811E-07"
+        iyy="3.04852995847407E-05"
+        iyz="-3.84817330122851E-06"
+        izz="8.15868272923475E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/laser_rada_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.44 0.44 0.44 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/laser_rada_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="laser_rada_Joint"
+    type="fixed">
+    <origin
+      xyz="0.127773333991041 0 0.1245"
+      rpy="-6.12303176911189E-17 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="laser_rada_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="IPC_Link">
+    <inertial>
+      <origin
+        xyz="-0.00126992540490819 0.00575544825604982 0.0229245531730232"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0.00106944227971094"
+        ixy="-7.30820255866916E-06"
+        ixz="-1.97040677960135E-07"
+        iyy="0.00128515292313222"
+        iyz="9.60373060734083E-07"
+        izz="0.00213547602056351" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/IPC_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.41 0.41 0.41 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/IPC_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="IPC_Joint"
+    type="fixed">
+    <origin
+      xyz="-0.0178799999999996 0 0.156"
+      rpy="-6.12303176911189E-17 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="IPC_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="depth_camera_Link">
+    <inertial>
+      <origin
+        xyz="-0.000552028989647596 -0.000792460603700161 0.023455188645832"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0.000165355922469739"
+        ixy="5.92527091830771E-07"
+        ixz="-5.54661721149495E-06"
+        iyy="4.36024741012988E-05"
+        iyz="7.34778246601573E-07"
+        izz="0.000165125170038346" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/depth_camera_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.22 0.22 0.22 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://bobac2_description/meshes/depth_camera_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="depth_camera_Joint"
+    type="fixed">
+    <origin
+      xyz="0.130000000000001 0 0.156"
+      rpy="-6.12303176911189E-17 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="depth_camera_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <link name="kinect_frame_optical"/>
+
+  <joint name="kinect_optical_joint" type="fixed">
+     <origin xyz="0 0 0.29" rpy="-1.5708 0 -1.5708"/>
+     <parent link="depth_camera_Link"/>
+      <child link="kinect_frame_optical"/>
+  </joint>
+</robot>
