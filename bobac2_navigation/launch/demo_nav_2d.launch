@@ -1,0 +1,22 @@
+<!--                                                                            
+  bobac2 navigation simulation:
+  - gazebo
+  - map_server
+  - move_base
+  - amcl
+  - rviz view
+ --> 
+
+<launch>
+	<!--gazebo-->
+	<include file="$(find bobac2_description)/launch/gazebo.launch"/>
+	<!--map_server-->
+	<include file="$(find bobac2_navigation)/launch/map_server.launch"/>
+	<!--move_base-->
+	<include file="$(find bobac2_navigation)/launch/move_base.launch"/>
+	<!--amcl-->
+	<include file="$(find bobac2_navigation)/launch/amcl.launch"/>
+	<!--  **************** Visualisation ****************  -->
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find bobac2_navigation)/rviz/robot_navigation.rviz"/>
+
+</launch>

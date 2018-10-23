@@ -1,0 +1,25 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="configuration_basename" default="bobac2_lds_2d.lua"/>
+  <arg name="sensor_range" default="25.0"/>
+  <arg name="cmd_vel_topic" default="/cmd_vel" />
+  <arg name="odom_topic" default="odom" />
+
+  <!-- bobac2 and Gmapping -->
+  <include file="$(find bobac2_slam)/launch/bobac2_gmapping.launch"/>
+  <!-- AMCL -->
+  <include file="$(find bobac2_navigation)/launch/amcl.launch"/>
+
+  <!-- move_base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+    <rosparam file="$(find rrt_exploration)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find rrt_exploration)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find rrt_exploration)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find rrt_exploration)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find rrt_exploration)/param/base_local_planner_params.yaml" command="load" />  
+    <rosparam file="$(find rrt_exploration)/param/move_base_params.yaml" command="load" />  
+  </node>
+  
+  <!-- rrt_exploration -->
+  <include file="$(find bobac2_slam)/launch/rrt_exploration_single.launch.xml" />
+</launch>
