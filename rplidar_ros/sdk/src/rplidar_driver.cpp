@@ -8,26 +8,26 @@
  *
  */
 /*
- * Redistribution and use in source and binary forms, with or without
+ * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
  *
- * 1. Redistributions of source code must retain the above copyright notice,
+ * 1. Redistributions of source code must retain the above copyright notice, 
  *    this list of conditions and the following disclaimer.
  *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
+ * 2. Redistributions in binary form must reproduce the above copyright notice, 
+ *    this list of conditions and the following disclaimer in the documentation 
  *    and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
@@ -43,12 +43,7 @@
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
 
-namespace rp
-{
-namespace standalone
-{
-namespace rplidar
-{
+namespace rp { namespace standalone{ namespace rplidar {
 
 
 // Factory Impl
@@ -72,7 +67,7 @@ void RPlidarDriver::DisposeDriver(RPlidarDriver * drv)
 
 // Serial Driver Impl
 
-RPlidarDriverSerialImpl::RPlidarDriverSerialImpl()
+RPlidarDriverSerialImpl::RPlidarDriverSerialImpl() 
     : _isConnected(false)
     , _isScanning(false)
     , _isSupportingMotorCtrl(false)
@@ -146,9 +141,9 @@ u_result RPlidarDriverSerialImpl::reset(_u32 timeout)
 u_result RPlidarDriverSerialImpl::getHealth(rplidar_response_device_health_t & healthinfo, _u32 timeout)
 {
     u_result  ans;
-
+    
     if (!isConnected()) return RESULT_OPERATION_FAIL;
-
+    
     _disableDataGrabbing();
 
     {
@@ -184,7 +179,7 @@ u_result RPlidarDriverSerialImpl::getHealth(rplidar_response_device_health_t & h
 u_result RPlidarDriverSerialImpl::getDeviceInfo(rplidar_response_device_info_t & info, _u32 timeout)
 {
     u_result  ans;
-
+    
     if (!isConnected()) return RESULT_OPERATION_FAIL;
 
     _disableDataGrabbing();
@@ -231,7 +226,7 @@ u_result RPlidarDriverSerialImpl::getFrequency(bool inExpressMode, size_t count,
         is4kmode = false;
     }
 
-    return RESULT_OK;
+	return RESULT_OK;
 }
 
 u_result RPlidarDriverSerialImpl::startScanNormal(bool force, _u32 timeout)
@@ -348,7 +343,7 @@ u_result RPlidarDriverSerialImpl::startScan(bool force, bool autoExpressMode)
         ans = checkExpressScanSupported(isExpressModeSupported);
 
         if (IS_FAIL(ans)) return ans;
-
+    
         if (isExpressModeSupported) {
             return startScanExpress(false);
         }
@@ -384,7 +379,8 @@ u_result RPlidarDriverSerialImpl::_cacheScanData()
 
     _waitScanData(local_buf, count); // // always discard the first data since it may be incomplete
 
-    while(_isScanning) {
+    while(_isScanning)
+    {
         if (IS_FAIL(ans=_waitScanData(local_buf, count))) {
             if (ans != RESULT_OPERATION_TIMEOUT) {
                 _isScanning = false;
@@ -392,10 +388,12 @@ u_result RPlidarDriverSerialImpl::_cacheScanData()
             }
         }
 
-        for (size_t pos = 0; pos < count; ++pos) {
-            if (local_buf[pos].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT) {
-                // only publish the data when it contains a full 360 degree scan
-
+        for (size_t pos = 0; pos < count; ++pos)
+        {
+            if (local_buf[pos].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT)
+            {
+                // only publish the data when it contains a full 360 degree scan 
+                
                 if ((local_scan[0].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT)) {
                     _lock.lock();
                     memcpy(_cached_scan_node_buf, local_scan, scan_count*sizeof(rplidar_response_measurement_node_t));
@@ -428,7 +426,8 @@ void     RPlidarDriverSerialImpl::_capsuleToNormal(const rplidar_response_capsul
 
         int angleInc_q16 = (diffAngle_q8 << 3);
         int currentAngle_raw_q16 = (prevStartAngle_q8 << 8);
-        for (size_t pos = 0; pos < _countof(_cached_previous_capsuledata.cabins); ++pos) {
+        for (size_t pos = 0; pos < _countof(_cached_previous_capsuledata.cabins); ++pos)
+        {
             int dist_q2[2];
             int angle_q6[2];
             int syncBit[2];
@@ -462,7 +461,7 @@ void     RPlidarDriverSerialImpl::_capsuleToNormal(const rplidar_response_capsul
                 node.distance_q2 = dist_q2[cpos];
 
                 nodebuffer[nodeCount++] = node;
-            }
+             }
 
         }
     }
@@ -484,7 +483,8 @@ u_result RPlidarDriverSerialImpl::_cacheCapsuledScanData()
 
     _waitCapsuledNode(capsule_node); // // always discard the first data since it may be incomplete
 
-    while(_isScanning) {
+    while(_isScanning)
+    {
         if (IS_FAIL(ans=_waitCapsuledNode(capsule_node))) {
             if (ans != RESULT_OPERATION_TIMEOUT && ans != RESULT_INVALID_DATA) {
                 _isScanning = false;
@@ -497,10 +497,12 @@ u_result RPlidarDriverSerialImpl::_cacheCapsuledScanData()
 
         _capsuleToNormal(capsule_node, local_buf, count);
 
-        for (size_t pos = 0; pos < count; ++pos) {
-            if (local_buf[pos].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT) {
-                // only publish the data when it contains a full 360 degree scan
-
+        for (size_t pos = 0; pos < count; ++pos)
+        {
+            if (local_buf[pos].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT)
+            {
+                // only publish the data when it contains a full 360 degree scan 
+                
                 if ((local_scan[0].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT)) {
                     _lock.lock();
                     memcpy(_cached_scan_node_buf, local_scan, scan_count*sizeof(rplidar_response_measurement_node_t));
@@ -521,22 +523,24 @@ u_result RPlidarDriverSerialImpl::_cacheCapsuledScanData()
 
 u_result RPlidarDriverSerialImpl::grabScanData(rplidar_response_measurement_node_t * nodebuffer, size_t & count, _u32 timeout)
 {
-    switch (_dataEvt.wait(timeout)) {
+    switch (_dataEvt.wait(timeout))
+    {
     case rp::hal::Event::EVENT_TIMEOUT:
         count = 0;
         return RESULT_OPERATION_TIMEOUT;
-    case rp::hal::Event::EVENT_OK: {
-        if(_cached_scan_node_count == 0) return RESULT_OPERATION_TIMEOUT; //consider as timeout
+    case rp::hal::Event::EVENT_OK:
+        {
+            if(_cached_scan_node_count == 0) return RESULT_OPERATION_TIMEOUT; //consider as timeout
 
-        rp::hal::AutoLocker l(_lock);
+            rp::hal::AutoLocker l(_lock);
 
-        size_t size_to_copy = min(count, _cached_scan_node_count);
+            size_t size_to_copy = min(count, _cached_scan_node_count);
 
-        memcpy(nodebuffer, _cached_scan_node_buf, size_to_copy*sizeof(rplidar_response_measurement_node_t));
-        count = size_to_copy;
-        _cached_scan_node_count = 0;
-    }
-    return RESULT_OK;
+            memcpy(nodebuffer, _cached_scan_node_buf, size_to_copy*sizeof(rplidar_response_measurement_node_t));
+            count = size_to_copy;
+            _cached_scan_node_count = 0;
+        }
+        return RESULT_OK;
 
     default:
         count = 0;
@@ -596,9 +600,9 @@ u_result RPlidarDriverSerialImpl::ascendScanData(rplidar_response_measurement_no
     }
 
     // Reorder the scan according to the angle value
-    for (i = 0; i < (count-1); i++) {
-        for (size_t j = (i+1); j < count; j++) {
-            if(nodebuffer[i].angle_q6_checkbit > nodebuffer[j].angle_q6_checkbit) {
+    for (i = 0; i < (count-1); i++){
+        for (size_t j = (i+1); j < count; j++){
+            if(nodebuffer[i].angle_q6_checkbit > nodebuffer[j].angle_q6_checkbit){
                 rplidar_response_measurement_node_t temp = nodebuffer[i];
                 nodebuffer[i] = nodebuffer[j];
                 nodebuffer[j] = temp;
@@ -617,42 +621,44 @@ u_result RPlidarDriverSerialImpl::_waitNode(rplidar_response_measurement_node_t 
     _u8 *nodeBuffer = (_u8*)node;
     _u32 waitTime;
 
-    while ((waitTime=getms() - startTs) <= timeout) {
+   while ((waitTime=getms() - startTs) <= timeout) {
         size_t remainSize = sizeof(rplidar_response_measurement_node_t) - recvPos;
         size_t recvSize;
 
         int ans = _rxtx->waitfordata(remainSize, timeout-waitTime, &recvSize);
-        if (ans == rp::hal::serial_rxtx::ANS_DEV_ERR)
+        if (ans == rp::hal::serial_rxtx::ANS_DEV_ERR) 
             return RESULT_OPERATION_FAIL;
         else if (ans == rp::hal::serial_rxtx::ANS_TIMEOUT)
             return RESULT_OPERATION_TIMEOUT;
 
         if (recvSize > remainSize) recvSize = remainSize;
-
+        
         _rxtx->recvdata(recvBuffer, recvSize);
 
         for (size_t pos = 0; pos < recvSize; ++pos) {
             _u8 currentByte = recvBuffer[pos];
             switch (recvPos) {
-            case 0: { // expect the sync bit and its reverse in this byte
-                _u8 tmp = (currentByte>>1);
-                if ( (tmp ^ currentByte) & 0x1 ) {
-                    // pass
-                } else {
-                    continue;
-                }
+            case 0: // expect the sync bit and its reverse in this byte
+                {
+                    _u8 tmp = (currentByte>>1);
+                    if ( (tmp ^ currentByte) & 0x1 ) {
+                        // pass
+                    } else {
+                        continue;
+                    }
 
-            }
-            break;
-            case 1: { // expect the highest bit to be 1
-                if (currentByte & RPLIDAR_RESP_MEASUREMENT_CHECKBIT) {
-                    // pass
-                } else {
-                    recvPos = 0;
-                    continue;
                 }
-            }
-            break;
+                break;
+            case 1: // expect the highest bit to be 1
+                {
+                    if (currentByte & RPLIDAR_RESP_MEASUREMENT_CHECKBIT) {
+                        // pass
+                    } else {
+                        recvPos = 0;
+                        continue;
+                    }
+                }
+                break;
             }
             nodeBuffer[recvPos++] = currentByte;
 
@@ -683,7 +689,7 @@ u_result RPlidarDriverSerialImpl::_waitScanData(rplidar_response_measurement_nod
         if (IS_FAIL(ans = _waitNode(&node, timeout - waitTime))) {
             return ans;
         }
-
+        
         nodebuffer[recvNodeCount++] = node;
 
         if (recvNodeCount == count) return RESULT_OK;
@@ -701,45 +707,47 @@ u_result RPlidarDriverSerialImpl::_waitCapsuledNode(rplidar_response_capsule_mea
     _u8 *nodeBuffer = (_u8*)&node;
     _u32 waitTime;
 
-    while ((waitTime=getms() - startTs) <= timeout) {
+   while ((waitTime=getms() - startTs) <= timeout) {
         size_t remainSize = sizeof(rplidar_response_capsule_measurement_nodes_t) - recvPos;
         size_t recvSize;
 
         int ans = _rxtx->waitfordata(remainSize, timeout-waitTime, &recvSize);
-        if (ans == rp::hal::serial_rxtx::ANS_DEV_ERR)
+        if (ans == rp::hal::serial_rxtx::ANS_DEV_ERR) 
             return RESULT_OPERATION_FAIL;
         else if (ans == rp::hal::serial_rxtx::ANS_TIMEOUT)
             return RESULT_OPERATION_TIMEOUT;
 
         if (recvSize > remainSize) recvSize = remainSize;
-
+        
         _rxtx->recvdata(recvBuffer, recvSize);
 
         for (size_t pos = 0; pos < recvSize; ++pos) {
             _u8 currentByte = recvBuffer[pos];
             switch (recvPos) {
-            case 0: { // expect the sync bit 1
-                _u8 tmp = (currentByte>>4);
-                if ( tmp == RPLIDAR_RESP_MEASUREMENT_EXP_SYNC_1 ) {
-                    // pass
-                } else {
-                    _is_previous_capsuledataRdy = false;
-                    continue;
-                }
+            case 0: // expect the sync bit 1
+                {
+                    _u8 tmp = (currentByte>>4);
+                    if ( tmp == RPLIDAR_RESP_MEASUREMENT_EXP_SYNC_1 ) {
+                        // pass
+                    } else {
+                        _is_previous_capsuledataRdy = false;
+                        continue;
+                    }
 
-            }
-            break;
-            case 1: { // expect the sync bit 2
-                _u8 tmp = (currentByte>>4);
-                if (tmp == RPLIDAR_RESP_MEASUREMENT_EXP_SYNC_2) {
-                    // pass
-                } else {
-                    recvPos = 0;
-                    _is_previous_capsuledataRdy = false;
-                    continue;
                 }
-            }
-            break;
+                break;
+            case 1: // expect the sync bit 2
+                {
+                    _u8 tmp = (currentByte>>4);
+                    if (tmp == RPLIDAR_RESP_MEASUREMENT_EXP_SYNC_2) {
+                        // pass
+                    } else {
+                        recvPos = 0;
+                        _is_previous_capsuledataRdy = false;
+                        continue;
+                    }
+                }
+                break;
             }
             nodeBuffer[recvPos++] = currentByte;
 
@@ -748,12 +756,15 @@ u_result RPlidarDriverSerialImpl::_waitCapsuledNode(rplidar_response_capsule_mea
                 _u8 checksum = 0;
                 _u8 recvChecksum = ((node.s_checksum_1 & 0xF) | (node.s_checksum_2<<4));
                 for (size_t cpos = offsetof(rplidar_response_capsule_measurement_nodes_t, start_angle_sync_q6);
-                        cpos < sizeof(rplidar_response_capsule_measurement_nodes_t); ++cpos) {
+                    cpos < sizeof(rplidar_response_capsule_measurement_nodes_t); ++cpos)
+                {
                     checksum ^= nodeBuffer[cpos];
                 }
-                if (recvChecksum == checksum) {
+                if (recvChecksum == checksum)
+                {
                     // only consider vaild if the checksum matches...
-                    if (node.start_angle_sync_q6 & RPLIDAR_RESP_MEASUREMENT_EXP_SYNCBIT) {
+                    if (node.start_angle_sync_q6 & RPLIDAR_RESP_MEASUREMENT_EXP_SYNCBIT) 
+                    {
                         // this is the first capsule frame in logic, discard the previous cached data...
                         _is_previous_capsuledataRdy = false;
                         return RESULT_OK;
@@ -824,15 +835,15 @@ u_result RPlidarDriverSerialImpl::_waitResponseHeader(rplidar_ans_header_t * hea
     while ((waitTime=getms() - startTs) <= timeout) {
         size_t remainSize = sizeof(rplidar_ans_header_t) - recvPos;
         size_t recvSize;
-
+        
         int ans = _rxtx->waitfordata(remainSize, timeout - waitTime, &recvSize);
-        if (ans == rp::hal::serial_rxtx::ANS_DEV_ERR)
+        if (ans == rp::hal::serial_rxtx::ANS_DEV_ERR) 
             return RESULT_OPERATION_FAIL;
         else if (ans == rp::hal::serial_rxtx::ANS_TIMEOUT)
             return RESULT_OPERATION_TIMEOUT;
-
+        
         if(recvSize > remainSize) recvSize = remainSize;
-
+        
         _rxtx->recvdata(recvBuffer, recvSize);
 
         for (size_t pos = 0; pos < recvSize; ++pos) {
@@ -840,9 +851,9 @@ u_result RPlidarDriverSerialImpl::_waitResponseHeader(rplidar_ans_header_t * hea
             switch (recvPos) {
             case 0:
                 if (currentByte != RPLIDAR_ANS_SYNC_BYTE1) {
-                    continue;
+                   continue;
                 }
-
+                
                 break;
             case 1:
                 if (currentByte != RPLIDAR_ANS_SYNC_BYTE2) {
@@ -871,11 +882,11 @@ void RPlidarDriverSerialImpl::_disableDataGrabbing()
 }
 
 u_result RPlidarDriverSerialImpl::getSampleDuration_uS(rplidar_response_sample_rate_t & rateInfo, _u32 timeout)
-{
+{  
     if (!isConnected()) return RESULT_OPERATION_FAIL;
-
+    
     _disableDataGrabbing();
-
+    
     rplidar_response_device_info_t devinfo;
     // 1. fetch the device version first...
     u_result ans = getDeviceInfo(devinfo, timeout);
@@ -924,9 +935,9 @@ u_result RPlidarDriverSerialImpl::checkMotorCtrlSupport(bool & support, _u32 tim
 {
     u_result  ans;
     support = false;
-
+    
     if (!isConnected()) return RESULT_OPERATION_FAIL;
-
+    
     _disableDataGrabbing();
 
     {
@@ -943,7 +954,7 @@ u_result RPlidarDriverSerialImpl::checkMotorCtrlSupport(bool & support, _u32 tim
         if (IS_FAIL(ans = _waitResponseHeader(&response_header, timeout))) {
             return ans;
         }
-
+        
         // verify whether we got a correct header
         if (response_header.type != RPLIDAR_ANS_TYPE_ACC_BOARD_FLAG) {
             return RESULT_INVALID_DATA;
@@ -1012,6 +1023,4 @@ u_result RPlidarDriverSerialImpl::stopMotor()
     }
 }
 
-}
-}
-}
+}}}

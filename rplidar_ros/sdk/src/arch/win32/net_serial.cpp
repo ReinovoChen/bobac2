@@ -35,12 +35,7 @@
 #include "sdkcommon.h"
 #include "net_serial.h"
 
-namespace rp
-{
-namespace arch
-{
-namespace net
-{
+namespace rp{ namespace arch{ namespace net{
 
 raw_serial::raw_serial()
     : rp::hal::serial_rxtx()
@@ -66,7 +61,7 @@ bool raw_serial::open()
 }
 
 bool raw_serial::bind(const char * portname, _u32 baudrate, _u32 flags)
-{
+{   
     strncpy(_portName, portname, sizeof(_portName));
     _baudrate = baudrate;
     _flags    = flags;
@@ -76,51 +71,56 @@ bool raw_serial::bind(const char * portname, _u32 baudrate, _u32 flags)
 bool raw_serial::open(const char * portname, _u32 baudrate, _u32 flags)
 {
     if (isOpened()) close();
-
+    
     _serial_handle = CreateFile(
-                         portname,
-                         GENERIC_READ | GENERIC_WRITE,
-                         0,
-                         NULL,
-                         OPEN_EXISTING,
-                         FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
-                         NULL
-                     );
+        portname,
+        GENERIC_READ | GENERIC_WRITE,
+        0,
+        NULL,
+        OPEN_EXISTING,
+        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
+        NULL
+        );
 
     if (_serial_handle == INVALID_HANDLE_VALUE) return false;
 
-    if (!SetupComm(_serial_handle, SERIAL_RX_BUFFER_SIZE, SERIAL_TX_BUFFER_SIZE)) {
+    if (!SetupComm(_serial_handle, SERIAL_RX_BUFFER_SIZE, SERIAL_TX_BUFFER_SIZE))
+    {
         close();
         return false;
     }
-
+    
     _dcb.BaudRate = baudrate;
     _dcb.ByteSize = 8;
     _dcb.Parity   = NOPARITY;
     _dcb.StopBits = ONESTOPBIT;
     _dcb.fDtrControl = DTR_CONTROL_ENABLE;
 
-    if (!SetCommState(_serial_handle, &_dcb)) {
+    if (!SetCommState(_serial_handle, &_dcb))
+    {
         close();
         return false;
     }
 
-    if (!SetCommTimeouts(_serial_handle, &_co)) {
+    if (!SetCommTimeouts(_serial_handle, &_co))
+    {
         close();
         return false;
     }
 
-    if (!SetCommMask(_serial_handle, EV_RXCHAR | EV_ERR )) {
+    if (!SetCommMask(_serial_handle, EV_RXCHAR | EV_ERR ))
+    {
         close();
         return false;
     }
 
-    if (!PurgeComm(_serial_handle, PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR )) {
+    if (!PurgeComm(_serial_handle, PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR ))
+    {
         close();
         return false;
     }
 
-    Sleep(30);
+    Sleep(30); 
     _is_serial_opened = true;
 
     //Clear the DTR bit set DTR=high
@@ -136,7 +136,7 @@ void raw_serial::close()
 
     CloseHandle(_serial_handle);
     _serial_handle = INVALID_HANDLE_VALUE;
-
+    
     _is_serial_opened = false;
 }
 
@@ -147,7 +147,7 @@ int raw_serial::senddata(const unsigned char * data, size_t size)
     if (!isOpened()) return ANS_DEV_ERR;
 
     if (data == NULL || size ==0) return 0;
-
+    
     if(ClearCommError(_serial_handle, &error, NULL) && error > 0)
         PurgeComm(_serial_handle, PURGE_TXABORT | PURGE_TXCLEAR);
 
@@ -164,13 +164,17 @@ int raw_serial::recvdata(unsigned char * data, size_t size)
     DWORD r_len = 0;
 
 
-    if(!ReadFile(_serial_handle, data, size, &r_len, &_ro)) {
-        if(GetLastError() == ERROR_IO_PENDING) {
-            if(!GetOverlappedResult(_serial_handle, &_ro, &r_len, FALSE)) {
+    if(!ReadFile(_serial_handle, data, size, &r_len, &_ro))
+    {
+        if(GetLastError() == ERROR_IO_PENDING) 
+        {
+            if(!GetOverlappedResult(_serial_handle, &_ro, &r_len, FALSE))
+            {
                 if(GetLastError() != ERROR_IO_INCOMPLETE)
                     r_len = 0;
             }
-        } else
+        }
+        else
             r_len = 0;
     }
 
@@ -188,11 +192,13 @@ int raw_serial::waitforsent(_u32 timeout, size_t * returned_size)
     DWORD w_len = 0;
     _word_size_t ans =0;
 
-    if (WaitForSingleObject(_wo.hEvent, timeout) == WAIT_TIMEOUT) {
+    if (WaitForSingleObject(_wo.hEvent, timeout) == WAIT_TIMEOUT)
+    {
         ans = ANS_TIMEOUT;
         goto _final;
     }
-    if(!GetOverlappedResult(_serial_handle, &_wo, &w_len, FALSE)) {
+    if(!GetOverlappedResult(_serial_handle, &_wo, &w_len, FALSE))
+    {
         ans = ANS_DEV_ERR;
     }
 _final:
@@ -206,10 +212,12 @@ int raw_serial::waitforrecv(_u32 timeout, size_t * returned_size)
     DWORD r_len = 0;
     _word_size_t ans =0;
 
-    if (WaitForSingleObject(_ro.hEvent, timeout) == WAIT_TIMEOUT) {
+    if (WaitForSingleObject(_ro.hEvent, timeout) == WAIT_TIMEOUT)
+    {
         ans = ANS_TIMEOUT;
     }
-    if(!GetOverlappedResult(_serial_handle, &_ro, &r_len, FALSE)) {
+    if(!GetOverlappedResult(_serial_handle, &_ro, &r_len, FALSE))
+    {
         ans = ANS_DEV_ERR;
     }
     if (returned_size) *returned_size = r_len;
@@ -225,7 +233,7 @@ int raw_serial::waitfordata(size_t data_count, _u32 timeout, size_t * returned_s
 
     if (returned_size==NULL) returned_size=(size_t *)&dummy_length;
 
-
+    
     if ( isOpened()) {
         size_t rxqueue_remaining =  rxqueue_count();
         if (rxqueue_remaining >= data_count) {
@@ -234,12 +242,16 @@ int raw_serial::waitfordata(size_t data_count, _u32 timeout, size_t * returned_s
         }
     }
 
-    while ( isOpened() ) {
+    while ( isOpened() )
+    {
         msk = 0;
         SetCommMask(_serial_handle, EV_RXCHAR | EV_ERR );
-        if(!WaitCommEvent(_serial_handle, &msk, &_wait_o)) {
-            if(GetLastError() == ERROR_IO_PENDING) {
-                if (WaitForSingleObject(_wait_o.hEvent, timeout) == WAIT_TIMEOUT) {
+        if(!WaitCommEvent(_serial_handle, &msk, &_wait_o))
+        {
+            if(GetLastError() == ERROR_IO_PENDING)
+            {
+                if (WaitForSingleObject(_wait_o.hEvent, timeout) == WAIT_TIMEOUT)
+                {
                     *returned_size =0;
                     return ANS_TIMEOUT;
                 }
@@ -247,21 +259,23 @@ int raw_serial::waitfordata(size_t data_count, _u32 timeout, size_t * returned_s
                 GetOverlappedResult(_serial_handle, &_wait_o, &length, TRUE);
 
                 ::ResetEvent(_wait_o.hEvent);
-            } else {
+            }else
+            {
                 ClearCommError(_serial_handle, &error, &stat);
-                *returned_size = stat.cbInQue;
+                 *returned_size = stat.cbInQue;
                 return ANS_DEV_ERR;
             }
         }
 
-        if(msk & EV_ERR) {
+        if(msk & EV_ERR){
             // FIXME: may cause problem here
             ClearCommError(_serial_handle, &error, &stat);
         }
 
-        if(msk & EV_RXCHAR) {
+        if(msk & EV_RXCHAR){
             ClearCommError(_serial_handle, &error, &stat);
-            if(stat.cbInQue >= data_count) {
+            if(stat.cbInQue >= data_count)
+            {
                 *returned_size = stat.cbInQue;
                 return 0;
             }
@@ -278,7 +292,8 @@ size_t raw_serial::rxqueue_count()
     DWORD error;
     DWORD r_len = 0;
 
-    if(ClearCommError(_serial_handle, &error, &com_stat) && error > 0) {
+    if(ClearCommError(_serial_handle, &error, &com_stat) && error > 0)
+    {
         PurgeComm(_serial_handle, PURGE_RXABORT | PURGE_RXCLEAR);
         return 0;
     }
@@ -323,16 +338,11 @@ void raw_serial::_init()
     _portName[0] = 0;
 }
 
-}
-}
-} //end rp::arch::net
+}}} //end rp::arch::net
 
 
 //begin rp::hal
-namespace rp
-{
-namespace hal
-{
+namespace rp{ namespace hal{
 
 serial_rxtx * serial_rxtx::CreateRxTx()
 {
@@ -345,5 +355,4 @@ void  serial_rxtx::ReleaseRxTx( serial_rxtx * rxtx)
 }
 
 
-}
-} //end rp::hal
+}} //end rp::hal

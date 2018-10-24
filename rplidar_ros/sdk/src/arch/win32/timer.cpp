@@ -36,10 +36,7 @@
 #include <mmsystem.h>
 #pragma comment(lib, "Winmm.lib")
 
-namespace rp
-{
-namespace arch
-{
+namespace rp{ namespace arch{
 
 static LARGE_INTEGER _current_freq;
 
@@ -60,7 +57,6 @@ _u32 getHDTimer()
 BEGIN_STATIC_CODE(timer_cailb)
 {
     HPtimer_reset();
-} END_STATIC_CODE(timer_cailb)
+}END_STATIC_CODE(timer_cailb)
 
-}
-}
+}}
