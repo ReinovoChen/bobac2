@@ -1,0 +1,11 @@
+<!--
+  Used for visualising rplidar in action.  
+  
+  It requires rplidar.launch.
+ -->
+<launch>
+  <include file="$(find rplidar_ros)/launch/rplidar.launch" />
+  <node pkg="tf" type="static_transform_publisher" name="laser_broadcaster" args="0 0 1 0 0 0 base_link laser_link 100" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find rplidar_ros)/rviz/rplidar.rviz" />
+</launch>
+ 
