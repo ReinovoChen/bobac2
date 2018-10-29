@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   message_runtime
   std_msgs
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -51,6 +52,8 @@ find_package(catkin REQUIRED COMPONENTS
    FILES
    car_cmd.msg
    car_data.msg
+   joint.msg
+   skeleton.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -71,6 +74,7 @@ find_package(catkin REQUIRED COMPONENTS
  generate_messages(
    DEPENDENCIES
    std_msgs
+   geometry_msgs
  )
 
 ################################################

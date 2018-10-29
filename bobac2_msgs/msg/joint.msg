@@ -1,0 +1,3 @@
+string joint_name
+geometry_msgs/Point joint_position
+float32 confidence

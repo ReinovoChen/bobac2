@@ -1,0 +1,4 @@
+<launch>
+	<!--node pkg="skeleton_track" type="skeleton_track_node" name="skeleton_track" launch-prefix="xterm -e gdb"/-->
+	<node pkg="skeleton_track" type="skeleton_track_node" name="skeleton_track"/>
+</launch>
