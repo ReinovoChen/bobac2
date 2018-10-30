@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="audio_collect" type="audio_collect" name="audio_collect" output="screen">
+	<param name="audio_file" type="string" value="./source/AIUI/audio/1.wav"/>
+	</node>
+</launch>

@@ -1,0 +1,6 @@
+代码说明:
+wav.h wav头
+audio_capture.h audio_capture.cpp 硬件设备层的参数配置
+audio_collect.h audio_collect.cpp 语音采集
+vad.h  vad.cpp 语音的端点识别
+audio_work.h  audio_work.cpp 此包在ros中的封装

@@ -1,0 +1,7 @@
+<launch>
+	<include file="$(find audio_collect)/launch/audio_collect.launch"/>
+	<include file="$(find ifly_package)/launch/aiui_semantic.launch"/>
+	<include file="$(find speech_synthesis)/launch/speech_synthesis.launch"/>
+        <node pkg="voice_apply" type="voice_apply" name="voice_apply" output="screen">
+        </node>
+</launch>

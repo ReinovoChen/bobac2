@@ -1,0 +1,5 @@
+<launch>
+        <node pkg="ifly_package" type="aiui_semantic" name="aiui_semantic" output="screen">
+        </node>
+</launch>
+
