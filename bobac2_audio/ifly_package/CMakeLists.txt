@@ -11,7 +11,7 @@ project(ifly_package)
 add_custom_command(OUTPUT COPY_SOURCE 
  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/config/ ~/.ros
 ) 
-add_custom_target(COPY ALL DEPENDS COPY_SOURCE)
+add_custom_target(Copy ALL DEPENDS COPY_SOURCE)
 
 
 find_package(catkin REQUIRED COMPONENTS
@@ -151,16 +151,6 @@ link_directories(${catkin_LIB_DIR}
 
 add_executable(aiui_semantic src/aiui_semantic.cpp)
 
-include(ExternalProject)
-
-ExternalProject_Add(
-	ifly
-	URL ${CMAKE_CURRENT_SOURCE_DIR}/iFLY_lib.tar
-	INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ifly_source
-	CONFIGURE_COMMAND cmake <SOURCE_DIR> -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-	STEP_TARGETS install
-)
-
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -228,6 +218,16 @@ target_link_libraries(aiui_semantic
 # catkin_add_nosetests(test)
 
 
+include(
+	ExternalProject 
+)
 
+ExternalProject_Add(
+	ifly
+	URL ${CMAKE_CURRENT_SOURCE_DIR}/iFLY_lib.tar
+	INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ifly_source
+	CONFIGURE_COMMAND cmake <SOURCE_DIR> -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+	STEP_TARGETS install
+)
 
 #add_definitions(-D_GLIBCXX_USE_CXX11_ABI=1)

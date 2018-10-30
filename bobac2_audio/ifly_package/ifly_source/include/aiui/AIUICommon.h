@@ -9,7 +9,7 @@
 
 #if defined(AIUI_WINDOWS)
 typedef long ssize_t;
-typedef unsigned long pid_t; 
+typedef unsigned long pid_t;
 #	undef AIUIEXPORT
 #	if defined(AIUI_LIB_COMPILING)
 #		define AIUIEXPORT __declspec(dllexport)
