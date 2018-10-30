@@ -1181,10 +1181,38 @@
   <link name="kinect_frame_optical"/>
 
   <joint name="kinect_optical_joint" type="fixed">
-     <origin xyz="0 0 0.29" rpy="-1.5708 0 -1.5708"/>
+     <origin xyz="0 0 -0.01" rpy="-1.5708 0 -1.5708"/>
      <parent link="depth_camera_Link"/>
       <child link="kinect_frame_optical"/>
   </joint>
+
+<link name="imu_Link">
+    <inertial>
+        <mass value="0.01" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0" 
+                 izz="0.01" />
+    </inertial>     
+        <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+            <box size = "0.02 0.02 0.02"/> 
+                </geometry>
+        </visual>
+    <collision>         
+        <geometry>
+            <box size = "0.02 0.02 0.02"/> 
+        </geometry>
+    </collision>     
+    </link>
+
+<joint name="imu_joint" type="fixed">
+    <axis xyz="0 0 0"/>
+    <origin xyz="0.00 0 0.1" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="imu_Link" />
+</joint>
 
 
 
@@ -1277,6 +1305,9 @@
 	<material>Gazebo/white</material>
 </gazebo>
 
+<gazebo reference="imu_Link">
+	<material>Gazebo/Yellow</material>
+</gazebo>
 
 
 
@@ -1381,7 +1412,7 @@
             <height>480</height>
           </image>
           <clip>
-            <near>0.05</near>
+            <near>0.5</near>
             <far>8.0</far>
           </clip>
         </camera>
@@ -1403,7 +1434,28 @@
           <distortion_t2>0.0</distortion_t2>
           <pointCloudCutoff>0.4</pointCloudCutoff>
         </plugin>
-      </sensor>
+      </sensor>       
     </gazebo>
+
+  <gazebo reference="imu_Link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <visualize>true</visualize>
+      <!--topic>/imu_data</topic-->
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>imu_data</topicName>
+        <bodyName>imu</bodyName>
+        <updateRateHZ>30.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>imu_Link</frameName>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
 
 </robot>
