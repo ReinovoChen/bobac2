@@ -1,0 +1,6 @@
+string 			pose_list_name		#pose list name
+geometry_msgs/Pose2D 	pose 			#pose
+
+---
+bool 			success
+string 			message
