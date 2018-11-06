@@ -118,7 +118,7 @@ void BobacKinematics::status_pub()
 {
     m_status_sub = m_h.subscribe<bobac2_msgs::car_data>
                    ("car_data", 10, &BobacKinematics::status_callback, this);
-    m_vel_pub = m_h.advertise<geometry_msgs::Twist>("read_vel", 10);
+    m_vel_pub = m_h.advertise<geometry_msgs::Twist>("real_vel", 10);
     m_real_vel = std::vector<double>(3, 0);
 
     ros::Rate loop(10);
