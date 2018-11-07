@@ -1,0 +1,12 @@
+<launch>
+	<node pkg = "bobac2_kinematics" type="bobac2_kinematics_node" name="bobac2_kinematics" output="screen">
+	<param name="kinematics_mode" type="int" value="2"/>
+	<param name="max_vx" type="double" value="0.3"/>
+	<param name="max_vy" type="double" value="0.4"/>
+	<param name="max_vth" type="double" value="2"/>
+	<!--three wheel omnidirectional drive, kinematics_mode = 2-->
+	<param name="wheel_radius" type="double" value="0.068"/>
+	<param name="wheel_separation" type="double" value="0.32374"/>
+	</node>
+	<node pkg = "bobac2_kinematics" type="odometry_node" name="odometry"/>
+</launch>
