@@ -10,8 +10,10 @@
 #include "config.h"
 #endif // if !defined(JSON_IS_AMALGAMATION)
 
-namespace VA {
-namespace Json {
+namespace VA
+{
+namespace Json
+{
 
 // writer.h
 class FastWriter;

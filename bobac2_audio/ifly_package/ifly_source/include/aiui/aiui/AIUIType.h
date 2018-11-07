@@ -13,7 +13,8 @@
 #include <stdint.h>
 #include <sys/types.h>
 
-namespace aiui {
+namespace aiui
+{
 
 /*
  内存管理类，用于管理一段内存，可当作带长度的数组使用。
@@ -64,10 +65,10 @@ public:
     AIUIEXPORT static inline Buffer* bufferFromData(void* data);
 
     /*
-	 由数据地址得到Buffer指针（只可读）。
-	 @param 数据地址
-	 @param 对应的Buffer指针
-	 */
+     由数据地址得到Buffer指针（只可读）。
+     @param 数据地址
+     @param 对应的Buffer指针
+     */
     AIUIEXPORT static inline const Buffer* bufferFromData(const void* data);
 
     /*
@@ -122,23 +123,23 @@ public:
      获取Buffer的拷贝，会在堆上重新分配内存。
      @return 拷贝对象指针
      */
-	AIUIEXPORT Buffer* copy();
+    AIUIEXPORT Buffer* copy();
 
 
 private:
-	inline Buffer() : mRefs(0), mSize(0) { }
+    inline Buffer() : mRefs(0), mSize(0) { }
 
-	inline ~Buffer() { }
+    inline ~Buffer() { }
 
-	Buffer(const Buffer&);
+    Buffer(const Buffer&);
 
-	Buffer& operator = (const Buffer&);
+    Buffer& operator = (const Buffer&);
 
-	mutable int32_t mRefs;
+    mutable int32_t mRefs;
 
-	size_t mSize;
+    size_t mSize;
 
-	uint32_t mReserved[2];
+    uint32_t mReserved[2];
 };
 
 
@@ -148,78 +149,85 @@ private:
 class IDataBundle
 {
 public:
-	AIUIEXPORT virtual ~IDataBundle();
+    AIUIEXPORT virtual ~IDataBundle();
 
-	/*
-	 创建数据捆绑对象。
-	 @return 对象指针
-	 */
-	AIUIEXPORT static IDataBundle* create();
+    /*
+     创建数据捆绑对象。
+     @return 对象指针
+     */
+    AIUIEXPORT static IDataBundle* create();
 
-	/*
-	  销毁对象。
-	 */
-	virtual void destroy() = 0;
+    /*
+      销毁对象。
+     */
+    virtual void destroy() = 0;
 
-	/*
-	 移除key对应的项目。
-	 @param key 项目的key值
-	 */
-	virtual bool remove(const char* key) = 0;
+    /*
+     移除key对应的项目。
+     @param key 项目的key值
+     */
+    virtual bool remove(const char* key) = 0;
 
-	/* 
-	 以下方法用于添加（获取）int、string、Buffer*类型数据。
-	*/
-	virtual bool putInt(const char* key, int val, bool replace = false) = 0;
+    /*
+     以下方法用于添加（获取）int、string、Buffer*类型数据。
+    */
+    virtual bool putInt(const char* key, int val, bool replace = false) = 0;
 
-	virtual int getInt(const char* key, int defaultVal) = 0;
+    virtual int getInt(const char* key, int defaultVal) = 0;
 
-	virtual bool putLong(const char* key, long val, bool replace = false) = 0;
+    virtual bool putLong(const char* key, long val, bool replace = false) = 0;
 
-	virtual long getLong(const char* key, long defaultVal) = 0;
+    virtual long getLong(const char* key, long defaultVal) = 0;
 
-	virtual bool putString(const char* key, const char* val, bool replace = false) = 0;
+    virtual bool putString(const char* key, const char* val, bool replace = false) = 0;
 
-	/**
-	  注：getString返回地址对应的内存由IDataBundle管理，不可（不需要）在外部delete或者free。
-	 **/
-	virtual const char* getString(const char* key, const char* defaultVal) = 0;
+    /**
+      注：getString返回地址对应的内存由IDataBundle管理，不可（不需要）在外部delete或者free。
+     **/
+    virtual const char* getString(const char* key, const char* defaultVal) = 0;
 
-	virtual bool putBinary(const char* key, Buffer* binary, bool replace = false) = 0;
+    virtual bool putBinary(const char* key, Buffer* binary, bool replace = false) = 0;
 
-	virtual Buffer* getBinary(const char* key) = 0;
+    virtual Buffer* getBinary(const char* key) = 0;
 };
 
 
 
 // ---------------------------------------------------------------------------
 
-const void* Buffer::data() const {
-	return this + 1;
+const void* Buffer::data() const
+{
+    return this + 1;
 }
 
-void* Buffer::data() {
-	return this + 1;
+void* Buffer::data()
+{
+    return this + 1;
 }
 
-size_t Buffer::size() const {
-	return mSize;
+size_t Buffer::size() const
+{
+    return mSize;
 }
 
-Buffer* Buffer::bufferFromData(void* data) {
-	return data ? static_cast<Buffer *>(data)-1 : 0;
+Buffer* Buffer::bufferFromData(void* data)
+{
+    return data ? static_cast<Buffer *>(data)-1 : 0;
 }
 
-const Buffer* Buffer::bufferFromData(const void* data) {
-	return data ? static_cast<const Buffer *>(data)-1 : 0;
+const Buffer* Buffer::bufferFromData(const void* data)
+{
+    return data ? static_cast<const Buffer *>(data)-1 : 0;
 }
 
-size_t Buffer::sizeFromData(const void* data) {
-	return data ? bufferFromData(data)->mSize : 0;
+size_t Buffer::sizeFromData(const void* data)
+{
+    return data ? bufferFromData(data)->mSize : 0;
 }
 
-bool Buffer::onlyOwner() const {
-	return (mRefs == 1);
+bool Buffer::onlyOwner() const
+{
+    return (mRefs == 1);
 }
 
 }

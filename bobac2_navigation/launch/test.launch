@@ -1,0 +1,4 @@
+<launch>
+	<!--  **************** Visualisation ****************  -->
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find bobac2_navigation)/rviz/robot_navigation.rviz --log-level-debug" output="screen" />
+</launch>

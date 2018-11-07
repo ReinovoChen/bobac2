@@ -101,7 +101,7 @@ vector<cv::Point3f> Skeleton_Track::get_skeleton_point3f(nite::Skeleton skeleton
     vector<nite::SkeletonJoint> vec_joints;
     vec_points.resize(15);
     vec_joints.resize(15);
-    
+
     vec_confidence.resize(15);
     vec_joints[0] = skeleton.getJoint( nite::JOINT_HEAD );
     vec_joints[1] = skeleton.getJoint( nite::JOINT_NECK );

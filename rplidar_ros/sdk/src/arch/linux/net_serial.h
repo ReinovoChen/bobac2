@@ -36,12 +36,17 @@
 
 #include "hal/abs_rxtx.h"
 
-namespace rp{ namespace arch{ namespace net{
+namespace rp
+{
+namespace arch
+{
+namespace net
+{
 
 class raw_serial : public rp::hal::serial_rxtx
 {
 public:
-    enum{
+    enum {
         SERIAL_RX_BUFFER_SIZE = 512,
         SERIAL_TX_BUFFER_SIZE = 128,
     };
@@ -52,7 +57,7 @@ public:
     virtual bool open();
     virtual void close();
     virtual void flush( _u32 flags);
-    
+
     virtual int waitfordata(size_t data_count,_u32 timeout = -1, size_t * returned_size = NULL);
 
     virtual int senddata(const unsigned char * data, size_t size);
@@ -87,4 +92,6 @@ protected:
     bool   _operation_aborted;
 };
 
-}}}
+}
+}
+}

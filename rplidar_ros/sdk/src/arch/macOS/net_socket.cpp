@@ -16,31 +16,34 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-namespace rp{ namespace net {
+namespace rp
+{
+namespace net
+{
 
 
-static inline int _halAddrTypeToOSType(SocketAddress::address_type_t type) 
+static inline int _halAddrTypeToOSType(SocketAddress::address_type_t type)
 {
     switch (type) {
-        case SocketAddress::ADDRESS_TYPE_INET:
-            return AF_INET;
-        case SocketAddress::ADDRESS_TYPE_INET6:
-            return AF_INET6;
-        case SocketAddress::ADDRESS_TYPE_UNSPEC:
-            return AF_UNSPEC;
+    case SocketAddress::ADDRESS_TYPE_INET:
+        return AF_INET;
+    case SocketAddress::ADDRESS_TYPE_INET6:
+        return AF_INET6;
+    case SocketAddress::ADDRESS_TYPE_UNSPEC:
+        return AF_UNSPEC;
 
-        default:
-            assert(!"should not reach here");
-            return AF_UNSPEC;
+    default:
+        assert(!"should not reach here");
+        return AF_UNSPEC;
     }
 }
 
 
-SocketAddress::SocketAddress() 
+SocketAddress::SocketAddress()
 {
     _platform_data = reinterpret_cast<void *>(new sockaddr_storage);
     memset(_platform_data, 0, sizeof(sockaddr_storage));
-    
+
     reinterpret_cast<sockaddr_storage *>(_platform_data)->ss_family = AF_INET;
 }
 
@@ -56,7 +59,7 @@ SocketAddress::SocketAddress(const char * addrString, int port, SocketAddress::a
 {
     _platform_data = reinterpret_cast<void *>(new sockaddr_storage);
     memset(_platform_data, 0, sizeof(sockaddr_storage));
-    
+
     // default to ipv4 in case the following operation fails
     reinterpret_cast<sockaddr_storage *>(_platform_data)->ss_family = AF_INET;
 
@@ -65,7 +68,7 @@ SocketAddress::SocketAddress(const char * addrString, int port, SocketAddress::a
 }
 
 SocketAddress::SocketAddress(void * platform_data)
- : _platform_data(platform_data)
+    : _platform_data(platform_data)
 {}
 
 SocketAddress & SocketAddress::operator = (const SocketAddress &src)
@@ -83,39 +86,39 @@ SocketAddress::~SocketAddress()
 SocketAddress::address_type_t SocketAddress::getAddressType() const
 {
     switch(reinterpret_cast<const sockaddr_storage *>(_platform_data)->ss_family) {
-        case AF_INET:
-            return ADDRESS_TYPE_INET;
-        case AF_INET6:
-            return ADDRESS_TYPE_INET6;
-        default:
-            assert(!"should not reach here");
-            return ADDRESS_TYPE_INET;
+    case AF_INET:
+        return ADDRESS_TYPE_INET;
+    case AF_INET6:
+        return ADDRESS_TYPE_INET6;
+    default:
+        assert(!"should not reach here");
+        return ADDRESS_TYPE_INET;
     }
 }
 
 int SocketAddress::getPort() const
 {
     switch (getAddressType()) {
-        case ADDRESS_TYPE_INET:
-            return (int)ntohs(reinterpret_cast<const sockaddr_in *>(_platform_data)->sin_port);
-        case ADDRESS_TYPE_INET6:
-            return (int)ntohs(reinterpret_cast<const sockaddr_in6 *>(_platform_data)->sin6_port);
-        default:
-            return 0;
+    case ADDRESS_TYPE_INET:
+        return (int)ntohs(reinterpret_cast<const sockaddr_in *>(_platform_data)->sin_port);
+    case ADDRESS_TYPE_INET6:
+        return (int)ntohs(reinterpret_cast<const sockaddr_in6 *>(_platform_data)->sin6_port);
+    default:
+        return 0;
     }
 }
 
 u_result SocketAddress::setPort(int port)
 {
     switch (getAddressType()) {
-        case ADDRESS_TYPE_INET:
-            reinterpret_cast<sockaddr_in *>(_platform_data)->sin_port = htons((short)port);
-            break;
-        case ADDRESS_TYPE_INET6:
-            reinterpret_cast<sockaddr_in6 *>(_platform_data)->sin6_port = htons((short)port);
-            break;
-        default:
-            return RESULT_OPERATION_FAIL;
+    case ADDRESS_TYPE_INET:
+        reinterpret_cast<sockaddr_in *>(_platform_data)->sin_port = htons((short)port);
+        break;
+    case ADDRESS_TYPE_INET6:
+        reinterpret_cast<sockaddr_in6 *>(_platform_data)->sin6_port = htons((short)port);
+        break;
+    default:
+        return RESULT_OPERATION_FAIL;
     }
     return RESULT_OK;
 }
@@ -125,24 +128,24 @@ u_result SocketAddress::setAddressFromString(const char * address_string,  Socke
     int ans = 0;
     int prevPort = getPort();
     switch (type) {
-        case ADDRESS_TYPE_INET:
-            reinterpret_cast<sockaddr_storage *>(_platform_data)->ss_family = AF_INET;
-            ans = inet_pton(AF_INET, 
-                            address_string, 
-                            &reinterpret_cast<sockaddr_in *>(_platform_data)->sin_addr);
+    case ADDRESS_TYPE_INET:
+        reinterpret_cast<sockaddr_storage *>(_platform_data)->ss_family = AF_INET;
+        ans = inet_pton(AF_INET,
+                        address_string,
+                        &reinterpret_cast<sockaddr_in *>(_platform_data)->sin_addr);
         break;
 
 
-        case ADDRESS_TYPE_INET6:
-            
-            reinterpret_cast<sockaddr_storage *>(_platform_data)->ss_family = AF_INET6;
-            ans = inet_pton(AF_INET6, 
-                            address_string, 
-                            &reinterpret_cast<sockaddr_in6  *>(_platform_data)->sin6_addr);
+    case ADDRESS_TYPE_INET6:
+
+        reinterpret_cast<sockaddr_storage *>(_platform_data)->ss_family = AF_INET6;
+        ans = inet_pton(AF_INET6,
+                        address_string,
+                        &reinterpret_cast<sockaddr_in6  *>(_platform_data)->sin6_addr);
         break;
 
-        default:
-            return RESULT_INVALID_DATA;
+    default:
+        return RESULT_INVALID_DATA;
 
     }
     setPort(prevPort);
@@ -156,14 +159,14 @@ u_result SocketAddress::getAddressAsString(char * buffer, size_t buffersize) con
     int net_family = reinterpret_cast<const sockaddr_storage *>(_platform_data)->ss_family;
     const char *ans = NULL;
     switch (net_family) {
-        case AF_INET:
-            ans = inet_ntop(net_family, &reinterpret_cast<const sockaddr_in *>(_platform_data)->sin_addr,
-                            buffer, buffersize);
+    case AF_INET:
+        ans = inet_ntop(net_family, &reinterpret_cast<const sockaddr_in *>(_platform_data)->sin_addr,
+                        buffer, buffersize);
         break;
 
-        case AF_INET6:
-            ans = inet_ntop(net_family, &reinterpret_cast<const sockaddr_in6 *>(_platform_data)->sin6_addr,
-                            buffer, buffersize);
+    case AF_INET6:
+        ans = inet_ntop(net_family, &reinterpret_cast<const sockaddr_in6 *>(_platform_data)->sin6_addr,
+                        buffer, buffersize);
 
         break;
     }
@@ -184,7 +187,7 @@ size_t SocketAddress::LoopUpHostName(const char * hostname, const char * sevicen
 
     if (!performDNS) {
         hints.ai_family |= AI_NUMERICSERV | AI_NUMERICHOST;
-    
+
     }
 
     ans = getaddrinfo(hostname, sevicename, &hints, &result);
@@ -196,7 +199,7 @@ size_t SocketAddress::LoopUpHostName(const char * hostname, const char * sevicen
         return 0;
     }
 
-    
+
     for (struct addrinfo * cursor = result; cursor != NULL; cursor = cursor->ai_next) {
         if (cursor->ai_family == ADDRESS_TYPE_INET || cursor->ai_family == ADDRESS_TYPE_INET6) {
             sockaddr_storage * storagebuffer = new sockaddr_storage;
@@ -206,7 +209,7 @@ size_t SocketAddress::LoopUpHostName(const char * hostname, const char * sevicen
         }
     }
 
-    
+
     freeaddrinfo(result);
 
     return addresspool.size();
@@ -215,21 +218,21 @@ size_t SocketAddress::LoopUpHostName(const char * hostname, const char * sevicen
 
 u_result SocketAddress::getRawAddress(_u8 * buffer, size_t bufferSize) const
 {
-     switch (getAddressType()) {
-        case ADDRESS_TYPE_INET:
-            if (bufferSize < sizeof(in_addr_t)) return RESULT_INSUFFICIENT_MEMORY;
+    switch (getAddressType()) {
+    case ADDRESS_TYPE_INET:
+        if (bufferSize < sizeof(in_addr_t)) return RESULT_INSUFFICIENT_MEMORY;
 
-            memcpy(buffer, &reinterpret_cast<const sockaddr_in *>(_platform_data)->sin_addr.s_addr, sizeof(reinterpret_cast<const sockaddr_in *>(_platform_data)->sin_addr.s_addr));
+        memcpy(buffer, &reinterpret_cast<const sockaddr_in *>(_platform_data)->sin_addr.s_addr, sizeof(reinterpret_cast<const sockaddr_in *>(_platform_data)->sin_addr.s_addr));
 
-            
-            break;
-        case ADDRESS_TYPE_INET6:
-            if (bufferSize < sizeof(in6_addr)) return RESULT_INSUFFICIENT_MEMORY;
-            memcpy(buffer, reinterpret_cast<const sockaddr_in6 *>(_platform_data)->sin6_addr.s6_addr, sizeof(reinterpret_cast<const sockaddr_in6 *>(_platform_data)->sin6_addr.s6_addr));
 
-            break;
-        default:
-            return RESULT_OPERATION_FAIL;
+        break;
+    case ADDRESS_TYPE_INET6:
+        if (bufferSize < sizeof(in6_addr)) return RESULT_INSUFFICIENT_MEMORY;
+        memcpy(buffer, reinterpret_cast<const sockaddr_in6 *>(_platform_data)->sin6_addr.s6_addr, sizeof(reinterpret_cast<const sockaddr_in6 *>(_platform_data)->sin6_addr.s6_addr));
+
+        break;
+    default:
+        return RESULT_OPERATION_FAIL;
     }
     return RESULT_OK;
 }
@@ -240,23 +243,21 @@ void SocketAddress::setLoopbackAddress(SocketAddress::address_type_t type)
 
     int prevPort = getPort();
     switch (type) {
-        case ADDRESS_TYPE_INET:
-            {
-                sockaddr_in * addrv4 = reinterpret_cast<sockaddr_in *>(_platform_data);
-                addrv4->sin_family = AF_INET;
-                addrv4->sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-            }
-            break;
-        case ADDRESS_TYPE_INET6:
-            {
-                sockaddr_in6  * addrv6 = reinterpret_cast<sockaddr_in6  *>(_platform_data);
-                addrv6->sin6_family = AF_INET6;
-                addrv6->sin6_addr = in6addr_loopback;
+    case ADDRESS_TYPE_INET: {
+        sockaddr_in * addrv4 = reinterpret_cast<sockaddr_in *>(_platform_data);
+        addrv4->sin_family = AF_INET;
+        addrv4->sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    }
+    break;
+    case ADDRESS_TYPE_INET6: {
+        sockaddr_in6  * addrv6 = reinterpret_cast<sockaddr_in6  *>(_platform_data);
+        addrv6->sin6_family = AF_INET6;
+        addrv6->sin6_addr = in6addr_loopback;
 
-            }
-            break;
-        default:
-            return;
+    }
+    break;
+    default:
+        return;
     }
 
     setPort(prevPort);
@@ -277,23 +278,21 @@ void SocketAddress::setAnyAddress(SocketAddress::address_type_t type)
 {
     int prevPort = getPort();
     switch (type) {
-        case ADDRESS_TYPE_INET:
-            {
-                sockaddr_in * addrv4 = reinterpret_cast<sockaddr_in *>(_platform_data);
-                addrv4->sin_family = AF_INET;
-                addrv4->sin_addr.s_addr = htonl(INADDR_ANY);
-            }
-            break;
-        case ADDRESS_TYPE_INET6:
-            {
-                sockaddr_in6  * addrv6 = reinterpret_cast<sockaddr_in6  *>(_platform_data);
-                addrv6->sin6_family = AF_INET6;
-                addrv6->sin6_addr = in6addr_any;
+    case ADDRESS_TYPE_INET: {
+        sockaddr_in * addrv4 = reinterpret_cast<sockaddr_in *>(_platform_data);
+        addrv4->sin_family = AF_INET;
+        addrv4->sin_addr.s_addr = htonl(INADDR_ANY);
+    }
+    break;
+    case ADDRESS_TYPE_INET6: {
+        sockaddr_in6  * addrv6 = reinterpret_cast<sockaddr_in6  *>(_platform_data);
+        addrv6->sin6_family = AF_INET6;
+        addrv6->sin6_addr = in6addr_any;
 
-            }
-            break;
-        default:
-            return;
+    }
+    break;
+    default:
+        return;
     }
 
     setPort(prevPort);
@@ -302,14 +301,20 @@ void SocketAddress::setAnyAddress(SocketAddress::address_type_t type)
 }
 
 
-}}
+}
+}
 
 
 
 ///--------------------------------
 
 
-namespace rp { namespace arch { namespace net{ 
+namespace rp
+{
+namespace arch
+{
+namespace net
+{
 
 using namespace rp::net;
 
@@ -329,7 +334,7 @@ public:
         this->setTimeout(DEFAULT_SOCKET_TIMEOUT, SOCKET_DIR_BOTH);
     }
 
-    virtual ~StreamSocketImpl() 
+    virtual ~StreamSocketImpl()
     {
         close(_socket_fd);
     }
@@ -370,22 +375,22 @@ public:
     {
         int ans;
         timeval tv;
-        tv.tv_sec = timeout / 1000; 
-        tv.tv_usec = (timeout % 1000) * 1000; 
+        tv.tv_sec = timeout / 1000;
+        tv.tv_usec = (timeout % 1000) * 1000;
 
         if (msk & SOCKET_DIR_RD) {
-             ans = ::setsockopt( _socket_fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv) );
-             if (ans) return RESULT_OPERATION_FAIL;
+            ans = ::setsockopt( _socket_fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv) );
+            if (ans) return RESULT_OPERATION_FAIL;
         }
 
         if (msk & SOCKET_DIR_WR) {
-             ans = ::setsockopt( _socket_fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv) );
-             if (ans) return RESULT_OPERATION_FAIL;
+            ans = ::setsockopt( _socket_fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv) );
+            if (ans) return RESULT_OPERATION_FAIL;
         }
 
         return RESULT_OK;
     }
-  
+
     virtual u_result connect(const SocketAddress & pairAddress)
     {
         const struct sockaddr * addr = reinterpret_cast<const struct sockaddr *>(pairAddress.getPlatformData());
@@ -394,19 +399,19 @@ public:
 
 
         switch (errno) {
-            case EAFNOSUPPORT:
-                return RESULT_OPERATION_NOT_SUPPORT;
+        case EAFNOSUPPORT:
+            return RESULT_OPERATION_NOT_SUPPORT;
 #if 0
-            case EINPROGRESS:
-                return RESULT_OK; //treat async connection as good status
+        case EINPROGRESS:
+            return RESULT_OK; //treat async connection as good status
 #endif
-            case ETIMEDOUT:
-                return RESULT_OPERATION_TIMEOUT;
-            default:
-                return RESULT_OPERATION_FAIL;
+        case ETIMEDOUT:
+            return RESULT_OPERATION_TIMEOUT;
+        default:
+            return RESULT_OPERATION_FAIL;
         }
     }
-      
+
     virtual u_result listen(int backlog)
     {
         int ans = ::listen( _socket_fd,   backlog);
@@ -414,12 +419,12 @@ public:
         return ans?RESULT_OPERATION_FAIL:RESULT_OK;
     }
 
-    virtual StreamSocket * accept(SocketAddress * pairAddress) 
+    virtual StreamSocket * accept(SocketAddress * pairAddress)
     {
         size_t addrsize;
         addrsize = sizeof(sockaddr_storage);
         int pair_socket = ::accept( _socket_fd, pairAddress?reinterpret_cast<struct sockaddr *>(const_cast<void *>(pairAddress->getPlatformData())):NULL
-            , (socklen_t*)&addrsize);
+                                    , (socklen_t*)&addrsize);
 
         if (pair_socket>=0) {
             return new StreamSocketImpl(pair_socket);
@@ -433,23 +438,23 @@ public:
         return waitforData(timeout);
     }
 
-    virtual u_result send(const void * buffer, size_t len) 
+    virtual u_result send(const void * buffer, size_t len)
     {
         size_t ans = ::send( _socket_fd, buffer, len, 0);
         if (ans == (int)len) {
             return RESULT_OK;
         } else {
             switch (errno) {
-                case EAGAIN:
+            case EAGAIN:
 #if EWOULDBLOCK!=EAGAIN
-                case EWOULDBLOCK:
+            case EWOULDBLOCK:
 #endif
-                    return RESULT_OPERATION_TIMEOUT;
-                default:
-                    return RESULT_OPERATION_FAIL;
+                return RESULT_OPERATION_TIMEOUT;
+            default:
+                return RESULT_OPERATION_FAIL;
             }
         }
-        
+
     }
 
 
@@ -457,19 +462,19 @@ public:
     {
         size_t ans = ::recv( _socket_fd, buf, len, 0);
         if (ans == (size_t)-1) {
-            recv_len = 0;  
+            recv_len = 0;
 
             switch (errno) {
-                case EAGAIN:
+            case EAGAIN:
 #if EWOULDBLOCK!=EAGAIN
-                case EWOULDBLOCK:
+            case EWOULDBLOCK:
 #endif
-                    return RESULT_OPERATION_TIMEOUT;
-                default:
-                    return RESULT_OPERATION_FAIL;
+                return RESULT_OPERATION_TIMEOUT;
+            default:
+                return RESULT_OPERATION_FAIL;
             }
 
-            
+
 
         } else {
             recv_len = ans;
@@ -482,9 +487,9 @@ public:
     {
         size_t ans = ::recv( _socket_fd, buf, len, MSG_DONTWAIT);
         if (ans == (size_t)-1) {
-            recv_len = 0;  
+            recv_len = 0;
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                return RESULT_OK; 
+                return RESULT_OK;
             } else {
                 return RESULT_OPERATION_FAIL;
             }
@@ -517,15 +522,15 @@ public:
         int shutdw_opt ;
 
         switch (mask) {
-            case SOCKET_DIR_RD:
-                shutdw_opt = SHUT_RD;
-                break;
-            case SOCKET_DIR_WR:
-                shutdw_opt = SHUT_WR;
-                break;
-            case SOCKET_DIR_BOTH:
-            default:
-                shutdw_opt = SHUT_RDWR;
+        case SOCKET_DIR_RD:
+            shutdw_opt = SHUT_RD;
+            break;
+        case SOCKET_DIR_WR:
+            shutdw_opt = SHUT_WR;
+            break;
+        case SOCKET_DIR_BOTH:
+        default:
+            shutdw_opt = SHUT_RDWR;
         }
 
         int ans = ::shutdown(_socket_fd, shutdw_opt);
@@ -538,13 +543,13 @@ public:
         return ::setsockopt( _socket_fd, SOL_SOCKET, SO_KEEPALIVE , &bool_true, sizeof(bool_true) )?RESULT_OPERATION_FAIL:RESULT_OK;
     }
 
-    virtual u_result enableNoDelay(bool enable ) 
+    virtual u_result enableNoDelay(bool enable )
     {
         int bool_true = enable?1:0;
         return ::setsockopt( _socket_fd, IPPROTO_TCP, TCP_NODELAY,&bool_true, sizeof(bool_true) )?RESULT_OPERATION_FAIL:RESULT_OK;
     }
 
-    virtual u_result waitforSent(_u32 timeout ) 
+    virtual u_result waitforSent(_u32 timeout )
     {
         fd_set wrset;
         FD_ZERO(&wrset);
@@ -556,15 +561,15 @@ public:
         int ans = ::select(_socket_fd+1, NULL, &wrset, NULL, &tv);
 
         switch (ans) {
-            case 1:
-                // fired
-                return RESULT_OK;
-            case 0:
-                // timeout
-                return RESULT_OPERATION_TIMEOUT;
-            default:
-                delay(0); //relax cpu
-                return RESULT_OPERATION_FAIL;
+        case 1:
+            // fired
+            return RESULT_OK;
+        case 0:
+            // timeout
+            return RESULT_OPERATION_TIMEOUT;
+        default:
+            delay(0); //relax cpu
+            return RESULT_OPERATION_FAIL;
         }
     }
 
@@ -580,15 +585,15 @@ public:
         int ans = ::select(_socket_fd+1, &rdset, NULL, NULL, &tv);
 
         switch (ans) {
-            case 1:
-                // fired
-                return RESULT_OK;
-            case 0:
-                // timeout
-                return RESULT_OPERATION_TIMEOUT;
-            default:
-                delay(0); //relax cpu
-                return RESULT_OPERATION_FAIL;
+        case 1:
+            // fired
+            return RESULT_OK;
+        case 0:
+            // timeout
+            return RESULT_OPERATION_TIMEOUT;
+        default:
+            delay(0); //relax cpu
+            return RESULT_OPERATION_FAIL;
         }
     }
 
@@ -612,7 +617,7 @@ public:
         setTimeout(DEFAULT_SOCKET_TIMEOUT, SOCKET_DIR_BOTH);
     }
 
-    virtual ~DGramSocketImpl() 
+    virtual ~DGramSocketImpl()
     {
         close(_socket_fd);
     }
@@ -653,24 +658,24 @@ public:
     {
         int ans;
         timeval tv;
-        tv.tv_sec = timeout / 1000; 
-        tv.tv_usec = (timeout % 1000) * 1000; 
+        tv.tv_sec = timeout / 1000;
+        tv.tv_usec = (timeout % 1000) * 1000;
 
         if (msk & SOCKET_DIR_RD) {
-             ans = ::setsockopt( _socket_fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv) );
-             if (ans) return RESULT_OPERATION_FAIL;
+            ans = ::setsockopt( _socket_fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv) );
+            if (ans) return RESULT_OPERATION_FAIL;
         }
 
         if (msk & SOCKET_DIR_WR) {
-             ans = ::setsockopt( _socket_fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv) );
-             if (ans) return RESULT_OPERATION_FAIL;
+            ans = ::setsockopt( _socket_fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv) );
+            if (ans) return RESULT_OPERATION_FAIL;
         }
 
         return RESULT_OK;
     }
-  
 
-    virtual u_result waitforSent(_u32 timeout ) 
+
+    virtual u_result waitforSent(_u32 timeout )
     {
         fd_set wrset;
         FD_ZERO(&wrset);
@@ -682,15 +687,15 @@ public:
         int ans = ::select(_socket_fd+1, NULL, &wrset, NULL, &tv);
 
         switch (ans) {
-            case 1:
-                // fired
-                return RESULT_OK;
-            case 0:
-                // timeout
-                return RESULT_OPERATION_TIMEOUT;
-            default:
-                delay(0); //relax cpu
-                return RESULT_OPERATION_FAIL;
+        case 1:
+            // fired
+            return RESULT_OK;
+        case 0:
+            // timeout
+            return RESULT_OPERATION_TIMEOUT;
+        default:
+            delay(0); //relax cpu
+            return RESULT_OPERATION_FAIL;
         }
     }
 
@@ -706,15 +711,15 @@ public:
         int ans = ::select(_socket_fd+1, &rdset, NULL, NULL, &tv);
 
         switch (ans) {
-            case 1:
-                // fired
-                return RESULT_OK;
-            case 0:
-                // timeout
-                return RESULT_OPERATION_TIMEOUT;
-            default:
-                delay(0); //relax cpu
-                return RESULT_OPERATION_FAIL;
+        case 1:
+            // fired
+            return RESULT_OK;
+        case 0:
+            // timeout
+            return RESULT_OPERATION_TIMEOUT;
+        default:
+            delay(0); //relax cpu
+            return RESULT_OPERATION_FAIL;
         }
     }
 
@@ -728,18 +733,18 @@ public:
             return RESULT_OK;
         } else {
             switch (errno) {
-                case EAGAIN:
+            case EAGAIN:
 #if EWOULDBLOCK!=EAGAIN
-                case EWOULDBLOCK:
+            case EWOULDBLOCK:
 #endif
-                    return RESULT_OPERATION_TIMEOUT;
+                return RESULT_OPERATION_TIMEOUT;
 
-                case EMSGSIZE:
-                    return RESULT_INVALID_DATA;
-                default:
-                    return RESULT_OPERATION_FAIL;
+            case EMSGSIZE:
+                return RESULT_INVALID_DATA;
+            default:
+                return RESULT_OPERATION_FAIL;
             }
-        
+
         }
 
     }
@@ -752,15 +757,15 @@ public:
 
         size_t ans = ::recvfrom( _socket_fd, buf, len, 0, addr, (socklen_t*)&source_addr_size);
         if (ans == (size_t)-1) {
-            recv_len = 0;  
+            recv_len = 0;
             switch (errno) {
-                case EAGAIN:
+            case EAGAIN:
 #if EWOULDBLOCK!=EAGAIN
-                case EWOULDBLOCK:
+            case EWOULDBLOCK:
 #endif
-                    return RESULT_OPERATION_TIMEOUT;
-                default:
-                    return RESULT_OPERATION_FAIL;
+                return RESULT_OPERATION_TIMEOUT;
+            default:
+                return RESULT_OPERATION_FAIL;
             }
 
         } else {
@@ -780,9 +785,9 @@ public:
         size_t ans = ::recvfrom( _socket_fd, buf, len, MSG_DONTWAIT, addr, &source_addr_size);
 
         if (ans == (size_t)-1) {
-            recv_len = 0;  
+            recv_len = 0;
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                return RESULT_OK; 
+                return RESULT_OK;
             } else {
                 return RESULT_OPERATION_FAIL;
             }
@@ -795,32 +800,37 @@ public:
 
     }
 #endif
-    
+
 protected:
     int  _socket_fd;
 
 };
 
 
-}}}
+}
+}
+}
 
 
-namespace rp { namespace net{ 
+namespace rp
+{
+namespace net
+{
 
 
 static inline int _socketHalFamilyToOSFamily(SocketBase::socket_family_t family)
 {
     switch (family) {
-        case SocketBase::SOCKET_FAMILY_INET:
-            return AF_INET;
-        case SocketBase::SOCKET_FAMILY_INET6:
-            return AF_INET6;
-        case SocketBase::SOCKET_FAMILY_RAW:
-            assert(!"should not reach here, AF_PACKET is not supported on macOS");
-            return AF_INET;
-        default:
-            assert(!"should not reach here");
-            return AF_INET; // force treating as IPv4 in release mode
+    case SocketBase::SOCKET_FAMILY_INET:
+        return AF_INET;
+    case SocketBase::SOCKET_FAMILY_INET6:
+        return AF_INET6;
+    case SocketBase::SOCKET_FAMILY_RAW:
+        assert(!"should not reach here, AF_PACKET is not supported on macOS");
+        return AF_INET;
+    default:
+        assert(!"should not reach here");
+        return AF_INET; // force treating as IPv4 in release mode
     }
 
 }
@@ -854,5 +864,6 @@ DGramSocket * DGramSocket::CreateSocket(SocketBase::socket_family_t family)
 }
 
 
-}}
+}
+}
 

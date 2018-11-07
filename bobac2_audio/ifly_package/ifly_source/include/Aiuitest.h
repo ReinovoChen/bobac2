@@ -26,29 +26,29 @@ using namespace VA;
 class VoiceListener: public IAIUIListener
 {
 public:
-	void onEvent(const IAIUIEvent& event)const;
-}; 
+    void onEvent(const IAIUIEvent& event)const;
+};
 
 
 class VoiceSemantic
 {
 public:
-	VoiceSemantic();
-	~VoiceSemantic();
-	bool voice_write(char* audio_file);
-	void agent_create();
-	void wakeup();
-	void start();
-	void stop();
-	bool ret_flag;
-	char *ret_iat_str;
-	char *ret_nlp_str;
+    VoiceSemantic();
+    ~VoiceSemantic();
+    bool voice_write(char* audio_file);
+    void agent_create();
+    void wakeup();
+    void start();
+    void stop();
+    bool ret_flag;
+    char *ret_iat_str;
+    char *ret_nlp_str;
 private:
-	VoiceListener listener;
-	bool w_flag;
-	IAIUIAgent* magent;
-	FileUtil::DataFileHelper* mFileHelper;
-	
+    VoiceListener listener;
+    bool w_flag;
+    IAIUIAgent* magent;
+    FileUtil::DataFileHelper* mFileHelper;
+
 };
 
 #endif

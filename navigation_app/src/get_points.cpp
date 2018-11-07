@@ -54,38 +54,38 @@ bool operator==(const Pose2D& p1,const Pose2D& p2 )
 bool add_pose(navigation_app::add_pose::Request& req,
               navigation_app::add_pose::Response& res)
 {
-    
-       std::string name = req.pose_list_name;
-       if( name == "") {
-           ROS_WARN_STREAM("name must no empty");
-           res.message = "add pose failed, no name";
-           res.success = false;
-           return true;
-       }
-       ROS_DEBUG_STREAM("pose list name " << name);
-       NamedPoseArray::iterator it = named_pose_array.find(name);
-       if(it != named_pose_array.end()) {
-           ROS_DEBUG_STREAM("find list name: " << name);
-           auto it_pose = std::find(named_pose_array[name].begin(), named_pose_array[name].end(), pose_form_ros(req.pose));
-           if(it_pose != named_pose_array[name].end()) {
-               ROS_WARN_STREAM("the pose already in list: " << name << ", do nothing");
-               res.message = std::string("the pose already in list: ") + name + std::string( ", add failed");
-               res.success = false;
-               return true;
-           } else {
-               named_pose_array[name].push_back(pose_form_ros(req.pose));
-               ROS_DEBUG_STREAM("pose: " << pose_form_ros(req.pose));
-           }
 
-       } else {
-           ROS_DEBUG_STREAM("cannot find list name: " << name << ", create new list");
-           named_pose_array[name] = std::vector<Pose2D>();
-           named_pose_array[name].push_back(pose_form_ros(req.pose));
-           ROS_DEBUG_STREAM("pose: " << pose_form_ros(req.pose));
-       }
-       res.message = "add pose success";
-       res.success = true;
-       
+    std::string name = req.pose_list_name;
+    if( name == "") {
+        ROS_WARN_STREAM("name must no empty");
+        res.message = "add pose failed, no name";
+        res.success = false;
+        return true;
+    }
+    ROS_DEBUG_STREAM("pose list name " << name);
+    NamedPoseArray::iterator it = named_pose_array.find(name);
+    if(it != named_pose_array.end()) {
+        ROS_DEBUG_STREAM("find list name: " << name);
+        auto it_pose = std::find(named_pose_array[name].begin(), named_pose_array[name].end(), pose_form_ros(req.pose));
+        if(it_pose != named_pose_array[name].end()) {
+            ROS_WARN_STREAM("the pose already in list: " << name << ", do nothing");
+            res.message = std::string("the pose already in list: ") + name + std::string( ", add failed");
+            res.success = false;
+            return true;
+        } else {
+            named_pose_array[name].push_back(pose_form_ros(req.pose));
+            ROS_DEBUG_STREAM("pose: " << pose_form_ros(req.pose));
+        }
+
+    } else {
+        ROS_DEBUG_STREAM("cannot find list name: " << name << ", create new list");
+        named_pose_array[name] = std::vector<Pose2D>();
+        named_pose_array[name].push_back(pose_form_ros(req.pose));
+        ROS_DEBUG_STREAM("pose: " << pose_form_ros(req.pose));
+    }
+    res.message = "add pose success";
+    res.success = true;
+
     return true;
 }
 
@@ -93,8 +93,8 @@ bool add_pose(navigation_app::add_pose::Request& req,
 bool modify_pose(navigation_app::modify_pose::Request& req,
                  navigation_app::modify_pose::Response& res)
 {
-     std::string name = req.pose_list_name;
-     if( name == "") {
+    std::string name = req.pose_list_name;
+    if( name == "") {
         ROS_WARN_STREAM("name must no empty");
         res.message = "modify pose failed, no name";
         res.success = false;
@@ -116,7 +116,7 @@ bool modify_pose(navigation_app::modify_pose::Request& req,
             ROS_WARN_STREAM("the pose in list: " << name << ", cannot find");
         }
 
-    }else {
+    } else {
         ROS_DEBUG_STREAM("cannot find list: " << name);
         res.message = std::string("cannot find list: ") + name;
         res.success = false;
@@ -128,8 +128,8 @@ bool modify_pose(navigation_app::modify_pose::Request& req,
 bool rm_pose(navigation_app::rm_pose::Request& req,
              navigation_app::rm_pose::Response& res)
 {
-     std::string name = req.pose_list_name;
-     if( name == "") {
+    std::string name = req.pose_list_name;
+    if( name == "") {
         ROS_WARN_STREAM("name must no empty");
         res.message = "failed";
         res.success = false;
@@ -156,11 +156,11 @@ bool rm_pose(navigation_app::rm_pose::Request& req,
     return true;
 }
 
-bool print_pose(navigation_app::print_pose::Request& req, 
+bool print_pose(navigation_app::print_pose::Request& req,
                 navigation_app::print_pose::Response& res)
 {
-     std::string name = req.pose_list_name;
-     if( name == "") {
+    std::string name = req.pose_list_name;
+    if( name == "") {
         ROS_WARN_STREAM("name is empty, print all list name");
         auto it = named_pose_array.begin();
         res.list_name = "[ ";
@@ -207,18 +207,18 @@ int main(int argc, char** argv)
     ros::Rate loop(100);
     while(ros::ok()) {
         auto it = named_pose_array.begin();
-        for(it; it != named_pose_array.end(); it++){
-             navigation_app::pose_list msg;
-             msg.name = it->first;
-             for(auto it_pose = it->second.begin(); it_pose != it->second.end(); it_pose++) {                 
-              msg.poses.push_back(to_ros_pose(*it_pose));
-             }
-             pub.publish(msg);             
+        for(it; it != named_pose_array.end(); it++) {
+            navigation_app::pose_list msg;
+            msg.name = it->first;
+            for(auto it_pose = it->second.begin(); it_pose != it->second.end(); it_pose++) {
+                msg.poses.push_back(to_ros_pose(*it_pose));
+            }
+            pub.publish(msg);
         }
         ros::spinOnce();
         loop.sleep();
-    } 
- 
+    }
+
     //ros::spin();
     return 0;
 }

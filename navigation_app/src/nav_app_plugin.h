@@ -27,18 +27,20 @@
 #include "visualization_msgs/Marker.h"
 #include "visualization_msgs/MarkerArray.h"
 
-namespace Ui{
-	class Form;
+namespace Ui
+{
+class Form;
 }
 
 struct Pose2D {
     Pose2D(double x=0, double y=0, double th=0):x_(x), y_(y), th_(th) {}
     double x_, y_, th_;
-    Pose2D& operator=(const Pose2D& that) {
-        if(this != &that){
+    Pose2D& operator=(const Pose2D& that)
+    {
+        if(this != &that) {
             this->x_ = that.x_;
             this->y_ = that.y_;
-            this->th_ = that.th_;         
+            this->th_ = that.th_;
         }
         return *this;
     }
@@ -48,15 +50,16 @@ typedef std::map<std::string, std::vector<Pose2D> > NamedPoseArray;
 
 typedef boost::shared_ptr<actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> > NavClientPtr;
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> NavClient;
-class NavApp:public rviz::Panel{
-Q_OBJECT
+class NavApp:public rviz::Panel
+{
+    Q_OBJECT
 public:
-	NavApp(QWidget* parent = 0);
-	virtual ~NavApp();
-	Ui::Form* ui;
-    
-    QTimer* timer_;    
-    
+    NavApp(QWidget* parent = 0);
+    virtual ~NavApp();
+    Ui::Form* ui;
+
+    QTimer* timer_;
+
     //GetPose* get_pose_;
     NamedPoseArray named_pose_array_;
     std::string list_name_;
@@ -66,9 +69,9 @@ public:
     ros::Subscriber list_sub_;
     ros::Subscriber pose_sub_;
     ros::Subscriber point_sub_;
-    
+
     bool isRunning_;
-    
+
     ros::Publisher pub_;
     ros::Publisher goal_pub_;
     boost::thread sub_thd_;
@@ -78,19 +81,19 @@ public:
     boost::mutex manager_mutex_;
     boost::condition_variable manager_cond_;
     boost::mutex exec_mutex_;
-    boost::condition_variable exec_cond_;    
-    
+    boost::condition_variable exec_cond_;
+
     NavClientPtr nav_client_;
-     
+
     ros::ServiceClient rm_clt;
     ros::ServiceClient add_clt;
     ros::ServiceClient mod_clt;
-    
+
     void exec_work();
     void satus_work();
     void manager_work();
     void sub_work();
-    
+
     void list_callback(const navigation_app::pose_list::ConstPtr& pose_list);
     void amcl_callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose);
 public slots:

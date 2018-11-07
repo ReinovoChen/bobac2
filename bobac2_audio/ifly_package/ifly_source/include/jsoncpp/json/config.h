@@ -87,8 +87,10 @@
 #define JSONCPP_DEPRECATED(message)
 #endif // if !defined(JSONCPP_DEPRECATED)
 
-namespace VA {
-namespace Json {
+namespace VA
+{
+namespace Json
+{
 typedef int Int;
 typedef unsigned int UInt;
 #if defined(JSON_NO_INT64)

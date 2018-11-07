@@ -64,7 +64,12 @@ extern "C" int tcflush(int fildes, int queue_selector);
 #endif
 
 
-namespace rp{ namespace arch{ namespace net{
+namespace rp
+{
+namespace arch
+{
+namespace net
+{
 
 raw_serial::raw_serial()
     : rp::hal::serial_rxtx()
@@ -87,7 +92,7 @@ bool raw_serial::open()
 }
 
 bool raw_serial::bind(const char * portname, uint32_t baudrate, uint32_t flags)
-{   
+{
     strncpy(_portName, portname, sizeof(_portName));
     _baudrate = baudrate;
     _flags    = flags;
@@ -97,12 +102,12 @@ bool raw_serial::bind(const char * portname, uint32_t baudrate, uint32_t flags)
 bool raw_serial::open(const char * portname, uint32_t baudrate, uint32_t flags)
 {
     if (isOpened()) close();
-    
+
     serial_fd = ::open(portname, O_RDWR | O_NOCTTY | O_NDELAY);
 
     if (serial_fd == -1) return false;
 
-    
+
 
 #if !defined(__GNUC__)
     // for standard UNIX
@@ -135,15 +140,14 @@ bool raw_serial::open(const char * portname, uint32_t baudrate, uint32_t flags)
 
     options.c_iflag &= ~(IXON | IXOFF | IXANY); // no sw flow control
 
-    // raw input mode   
+    // raw input mode
     options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-    // raw output mode   
+    // raw output mode
     options.c_oflag &= ~OPOST;
 
 
 
-    if (tcsetattr(serial_fd, TCSANOW, &options))
-    {
+    if (tcsetattr(serial_fd, TCSANOW, &options)) {
         close();
         return false;
     }
@@ -174,7 +178,7 @@ bool raw_serial::open(const char * portname, uint32_t baudrate, uint32_t flags)
     tio.c_cc[VTIME] = 0;        //time in 1/10th sec wait
 
     tio.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-    // raw output mode   
+    // raw output mode
     tio.c_oflag &= ~OPOST;
 
     tio.c_ispeed = baudrate;
@@ -188,8 +192,7 @@ bool raw_serial::open(const char * portname, uint32_t baudrate, uint32_t flags)
 
     tcflush(serial_fd, TCIFLUSH);
 
-    if (fcntl(serial_fd, F_SETFL, FNDELAY))
-    {
+    if (fcntl(serial_fd, F_SETFL, FNDELAY)) {
         close();
         return false;
     }
@@ -221,7 +224,7 @@ bool raw_serial::open(const char * portname, uint32_t baudrate, uint32_t flags)
             break;
 
     } while (0);
-    
+
     return true;
 }
 
@@ -230,7 +233,7 @@ void raw_serial::close()
     if (serial_fd != -1)
         ::close(serial_fd);
     serial_fd = -1;
-    
+
     if (_selfpipe[0] != -1)
         ::close(_selfpipe[0]);
 
@@ -249,19 +252,19 @@ int raw_serial::senddata(const unsigned char * data, size_t size)
     if (!isOpened()) return 0;
 
     if (data == NULL || size ==0) return 0;
-    
+
     size_t tx_len = 0;
     required_tx_cnt = 0;
     do {
         int ans = ::write(serial_fd, data + tx_len, size-tx_len);
-        
+
         if (ans == -1) return tx_len;
-        
+
         tx_len += ans;
         required_tx_cnt = tx_len;
-    }while (tx_len<size);
-    
-    
+    } while (tx_len<size);
+
+
     return tx_len;
 }
 
@@ -269,9 +272,9 @@ int raw_serial::senddata(const unsigned char * data, size_t size)
 int raw_serial::recvdata(unsigned char * data, size_t size)
 {
     if (!isOpened()) return 0;
-    
+
     int ans = ::read(serial_fd, data, size);
-    
+
     if (ans == -1) ans=0;
     required_rx_cnt = ans;
     return ans;
@@ -280,7 +283,7 @@ int raw_serial::recvdata(unsigned char * data, size_t size)
 
 void raw_serial::flush( _u32 flags)
 {
-    tcflush(serial_fd,TCIFLUSH); 
+    tcflush(serial_fd,TCIFLUSH);
 }
 
 int raw_serial::waitforsent(_u32 timeout, size_t * returned_size)
@@ -292,7 +295,7 @@ int raw_serial::waitforsent(_u32 timeout, size_t * returned_size)
 int raw_serial::waitforrecv(_u32 timeout, size_t * returned_size)
 {
     if (!isOpened() ) return -1;
-   
+
     if (returned_size) *returned_size = required_rx_cnt;
     return 0;
 }
@@ -320,42 +323,34 @@ int raw_serial::waitfordata(size_t data_count, _u32 timeout, size_t * returned_s
     timeout_val.tv_sec = timeout / 1000;
     timeout_val.tv_usec = (timeout % 1000) * 1000;
 
-    if ( isOpened() )
-    {
+    if ( isOpened() ) {
         if ( ioctl(serial_fd, FIONREAD, returned_size) == -1) return ANS_DEV_ERR;
-        if (*returned_size >= data_count)
-        {
+        if (*returned_size >= data_count) {
             return 0;
         }
     }
 
-    while ( isOpened() )
-    {
+    while ( isOpened() ) {
         /* Do the select */
         int n = ::select(max_fd, &input_set, NULL, NULL, &timeout_val);
 
-        if (n < 0)
-        {
+        if (n < 0) {
             // select error
             *returned_size =  0;
             return ANS_DEV_ERR;
-        }
-        else if (n == 0)
-        {
+        } else if (n == 0) {
             // time out
             *returned_size =0;
             return ANS_TIMEOUT;
-        }
-        else
-        {
-            if (FD_ISSET(_selfpipe[0], &input_set)) {   
+        } else {
+            if (FD_ISSET(_selfpipe[0], &input_set)) {
                 // require aborting the current operation
                 int ch;
-                for (;;) {                    
+                for (;;) {
                     if (::read(_selfpipe[0], &ch, 1) == -1) {
                         break;
                     }
-                    
+
                 }
 
                 // treat as  timeout
@@ -368,19 +363,16 @@ int raw_serial::waitfordata(size_t data_count, _u32 timeout, size_t * returned_s
 
 
             if ( ioctl(serial_fd, FIONREAD, returned_size) == -1) return ANS_DEV_ERR;
-            if (*returned_size >= data_count)
-            {
+            if (*returned_size >= data_count) {
                 return 0;
-            }
-            else 
-            {
+            } else {
                 int remain_timeout = timeout_val.tv_sec*1000000 + timeout_val.tv_usec;
                 int expect_remain_time = (data_count - *returned_size)*1000000*8/_baudrate;
                 if (remain_timeout > expect_remain_time)
                     usleep(expect_remain_time);
             }
         }
-        
+
     }
 
     return ANS_DEV_ERR;
@@ -390,7 +382,7 @@ size_t raw_serial::rxqueue_count()
 {
     if  ( !isOpened() ) return 0;
     size_t remaining;
-    
+
     if (::ioctl(serial_fd, FIONREAD, &remaining) == -1) return 0;
     return remaining;
 }
@@ -413,7 +405,7 @@ void raw_serial::clearDTR()
 
 void raw_serial::_init()
 {
-    serial_fd = -1;  
+    serial_fd = -1;
     _portName[0] = 0;
     required_tx_cnt = required_rx_cnt = 0;
     _operation_aborted = false;
@@ -430,8 +422,8 @@ void raw_serial::cancelOperation()
 
 _u32 raw_serial::getTermBaudBitmap(_u32 baud)
 {
-#define BAUD_CONV( _baud_) case _baud_:  return B##_baud_ 
-switch (baud) {
+#define BAUD_CONV( _baud_) case _baud_:  return B##_baud_
+    switch (baud) {
         BAUD_CONV(1200);
         BAUD_CONV(1800);
         BAUD_CONV(2400);
@@ -458,10 +450,15 @@ switch (baud) {
     return -1;
 }
 
-}}} //end rp::arch::net
+}
+}
+} //end rp::arch::net
 
 //begin rp::hal
-namespace rp{ namespace hal{
+namespace rp
+{
+namespace hal
+{
 
 serial_rxtx * serial_rxtx::CreateRxTx()
 {
@@ -473,4 +470,5 @@ void serial_rxtx::ReleaseRxTx(serial_rxtx *rxtx)
     delete rxtx;
 }
 
-}} //end rp::hal
+}
+} //end rp::hal
