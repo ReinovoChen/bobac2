@@ -23,13 +23,16 @@ include_directories(
 
 catkin_package()
 
-add_executable(rplidarNode src/node.cpp ${RPLIDAR_SDK_SRC})
-target_link_libraries(rplidarNode ${catkin_LIBRARIES})
+add_executable(rplidarNode_A1 src/node_A1.cpp ${RPLIDAR_SDK_SRC})
+target_link_libraries(rplidarNode_A1 ${catkin_LIBRARIES})
+
+add_executable(rplidarNode_A2 src/node_A2.cpp ${RPLIDAR_SDK_SRC})
+target_link_libraries(rplidarNode_A2 ${catkin_LIBRARIES})
 
 add_executable(rplidarNodeClient src/client.cpp)
 target_link_libraries(rplidarNodeClient ${catkin_LIBRARIES})
 
-install(TARGETS rplidarNode rplidarNodeClient
+install(TARGETS rplidarNode_A1  rplidarNode_A2 rplidarNodeClient
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
