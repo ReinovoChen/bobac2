@@ -88,16 +88,16 @@ void publish_scan(ros::Publisher *pub,
             ranges[i] = read_value;
         intensities[i] = (float) (nodes[i].quality >> 2);
     }
-	//x×ó°ëÖá
-	for(int i=359-output_angle_max; i<359; i++) {
-	    scan_msg.ranges.push_back(ranges[i]);
-	    scan_msg.intensities.push_back(intensities[i]);
-	}
-	//xÓÒ°ëÖá
-	for(int i=0; i<-output_angle_min; i++) {
-	    scan_msg.ranges.push_back(ranges[i]);
-	    scan_msg.intensities.push_back(intensities[i]);
-	}
+    //x×ó°ëÖá
+    for(int i=359-output_angle_max; i<359; i++) {
+        scan_msg.ranges.push_back(ranges[i]);
+        scan_msg.intensities.push_back(intensities[i]);
+    }
+    //xÓÒ°ëÖá
+    for(int i=0; i<-output_angle_min; i++) {
+        scan_msg.ranges.push_back(ranges[i]);
+        scan_msg.intensities.push_back(intensities[i]);
+    }
 
     if(reverse_data) {
         std::reverse(scan_msg.ranges.begin(), scan_msg.ranges.end());
