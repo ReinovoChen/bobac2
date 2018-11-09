@@ -1,6 +1,6 @@
 <launch>
-	<args name="driver_methods" default="two_wheels" doc="driver_type [two_wheels, three_wheels]"/>
-	<!--args name="mode" default="three_wheels"/-->
+	<arg name="driver_methods" default="two_wheels" doc="driver_type [two_wheels, three_wheels]"/>
+	<!--arg name="mode" default="three_wheels"/-->
 	<node pkg="bobac2_base" type="bobac2_base_node" name="bobac2_base_node" output="screen"/>
 	<include file="$(find bobac2_kinematics)/launch/bobac2_kinematics_$(arg driver_methods).launch"/>
 </launch>

@@ -1,4 +1,4 @@
 <launch>
-  <args name="laser_type" default="A2" doc="type[A1, A2]"/>
+  <arg name="laser_type" default="A2" doc="type[A1, A2]"/>
   <include file="$(find rplidar_ros)/launch/rplidar_$(arg laser_type).launch" />
 </launch>
