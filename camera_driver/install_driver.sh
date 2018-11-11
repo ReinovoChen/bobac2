@@ -9,4 +9,4 @@ install -T 56-orbbec-usb.rules /etc/udev/rules.d/56-orbbec-usb.rules && echo "se
 install -T 40-serial.rules /etc/udev/rules.d/40-serial.rules && echo "set serial udev rules"
 echo "Bobac will reboot 5 seconds later. And you can test, enjoy!"
 sleep 5
-#reboot
+reboot
