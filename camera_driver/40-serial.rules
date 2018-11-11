@@ -1,0 +1,3 @@
+#serial
+KERNEL=="ttyS[0-5]",GROUP="root", MODE="0666"
+KERNEL=="ttyUSB[0-6]",GROUP="root", MODE="0666"
