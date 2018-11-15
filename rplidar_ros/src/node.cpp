@@ -43,9 +43,6 @@
 
 #define DEG2RAD(x) ((x)*M_PI/180.)
 
-int output_angle_min = 0;
-int output_angle_max = 0;
-
 using namespace rp::standalone::rplidar;
 
 RPlidarDriver * drv = NULL;
@@ -64,11 +61,17 @@ void publish_scan(ros::Publisher *pub,
     scan_msg.header.stamp = start;
     scan_msg.header.frame_id = frame_id;
     scan_count++;
-    bool reversed = (angle_max > angle_min); 
-    scan_msg.angle_min = DEG2RAD(output_angle_min);
-    scan_msg.angle_max = DEG2RAD(output_angle_max);
 
-    scan_msg.angle_increment = DEG2RAD(1);
+    bool reversed = (angle_max > angle_min);
+    if ( reversed ) {
+      scan_msg.angle_min =  M_PI - angle_max;
+      scan_msg.angle_max =  M_PI - angle_min;
+    } else {
+      scan_msg.angle_min =  M_PI - angle_min;
+      scan_msg.angle_max =  M_PI - angle_max;
+    }
+    scan_msg.angle_increment =
+        (scan_msg.angle_max - scan_msg.angle_min) / (double)(node_count-1);
 
     scan_msg.scan_time = scan_time;
     scan_msg.time_increment = scan_time / (double)(node_count-1);
@@ -77,49 +80,27 @@ void publish_scan(ros::Publisher *pub,
 
     scan_msg.intensities.resize(node_count);
     scan_msg.ranges.resize(node_count);
-    
-    std::vector<float> ranges, intensities;
-    ranges.resize(node_count);
-    intensities.resize(node_count);
-    if(output_angle_max < 0 || output_angle_max > 180) ROS_ERROR("output_angle_max invalid");
-    if(output_angle_min < -180 || output_angle_min > 0) ROS_ERROR("out_angle_min invalid");
     bool reverse_data = (!inverted && reversed) || (inverted && !reversed);
- 
- 	for (size_t i = 0; i < node_count; i++) {
-    	float read_value = (float) nodes[i].dist_mm_q2/4.0f/1000;
-    	if (read_value == 0.0)
-        	ranges[i] = std::numeric_limits<float>::infinity();
-    	else
-        	ranges[i] = read_value;
-    		intensities[i] = (float) (nodes[i].quality >> 2);
-	}
-	
-	if(!inverted) {
-    	//x×ó°ëÖá
-		for(int i=359-output_angle_max; i<359; i++) {
-		    scan_msg.ranges.push_back(ranges[i]);
-		    scan_msg.intensities.push_back(intensities[i]);
-		}
-		//xÓÒ°ëÖá
-		for(int i=0; i<-output_angle_min; i++) {
-		    scan_msg.ranges.push_back(ranges[i]);
-		    scan_msg.intensities.push_back(intensities[i]);
-    	}
-    	std::reverse(scan_msg.ranges.begin(), scan_msg.ranges.end());
-        std::reverse(scan_msg.intensities.begin(), scan_msg.intensities.end());
-    	
+    if (!reverse_data) {
+        for (size_t i = 0; i < node_count; i++) {
+            float read_value = (float) nodes[i].dist_mm_q2/4.0f/1000;
+            if (read_value == 0.0)
+                scan_msg.ranges[i] = std::numeric_limits<float>::infinity();
+            else
+                scan_msg.ranges[i] = read_value;
+            scan_msg.intensities[i] = (float) (nodes[i].quality >> 2);
+        }
     } else {
-    	//x×ó°ëÖá
-    	for(int i=359+output_angle_min; i<359; i++) {
-		    scan_msg.ranges.push_back(ranges[i]);
-		    scan_msg.intensities.push_back(intensities[i]);
-    	} 		
-		//xÓÒ°ëÖá
-   		for(int i=0; i<output_angle_max; i++) {
-		    scan_msg.ranges.push_back(ranges[i]);
-		    scan_msg.intensities.push_back(intensities[i]);
-		}
+        for (size_t i = 0; i < node_count; i++) {
+            float read_value = (float)nodes[i].dist_mm_q2/4.0f/1000;
+            if (read_value == 0.0)
+                scan_msg.ranges[node_count-1-i] = std::numeric_limits<float>::infinity();
+            else
+                scan_msg.ranges[node_count-1-i] = read_value;
+            scan_msg.intensities[node_count-1-i] = (float) (nodes[i].quality >> 2);
+        }
     }
+
     pub->publish(scan_msg);
 }
 
@@ -218,9 +199,7 @@ int main(int argc, char * argv[]) {
     nh_private.param<bool>("inverted", inverted, false);
     nh_private.param<bool>("angle_compensate", angle_compensate, false);
     nh_private.param<std::string>("scan_mode", scan_mode, std::string());
-    nh_private.param<int>("output_angle_min",output_angle_min,-180);
-    nh_private.param<int>("output_angle_max",output_angle_max,180);
-    ROS_INFO("angle range[%d, %d]", output_angle_min, output_angle_max);
+
     ROS_INFO("RPLIDAR running on ROS package rplidar_ros. SDK Version:"RPLIDAR_SDK_VERSION"");
 
     u_result     op_result;

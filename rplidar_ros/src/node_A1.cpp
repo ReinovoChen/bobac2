@@ -111,7 +111,7 @@ void publish_scan(ros::Publisher *pub,
 
     if(reverse_data) {
         std::reverse(scan_msg.ranges.begin(), scan_msg.ranges.end());
-        std::reverse(intensities.begin(), intensities.end());
+        std::reverse(scan_msg.intensities.begin(), scan_msg.intensities.end());
     }
     pub->publish(scan_msg);
 }
