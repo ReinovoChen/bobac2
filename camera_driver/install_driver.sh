@@ -1,6 +1,7 @@
 #!/bin/bash
 ##install openni2
 dpkg -s libopenni2-dev &>/dev/null || apt-get install libopenni2-dev -y
+install -T libOpenNi2.so /usr/lib/libOpenNi2.so && echo "openni2 installed"
 #install camera driver
 install -t /usr/lib/OpenNI2/Drivers Drivers/* && echo "orbbec camera driver installed"
 ##install test demo
