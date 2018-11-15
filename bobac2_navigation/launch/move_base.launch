@@ -7,7 +7,7 @@
   <arg name="laser_topic" default="scan" />
   <arg name="custom_param_file" default="$(find bobac2_navigation)/param/dummy.yaml"/>
 
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
     <rosparam file="$(find bobac2_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find bobac2_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />   
     <rosparam file="$(find bobac2_navigation)/param/local_costmap_params.yaml" command="load" />   
