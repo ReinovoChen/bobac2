@@ -8,7 +8,7 @@
   <param name="robot_description" textfile="$(find bobac2_description)/urdf/bobac2_description.urdf" />
   <!-- bobac2 base & kinematics-->  
   <include file="$(find bobac2_base)/launch/bobac2_base.launch" /> 
-  <include file="$(find rplidar_ros)/launch/rplidar.launch" /> 
+  <include file="$(find rplidar_ros)/launch/bobac2_laser.launch" /> 
   <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
   <include file="$(find bobac2_slam)/launch/bobac2_$(arg slam_methods).launch" >   
     <arg name="configuration_basename" value="$(arg configuration_basename)" />
