@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="bobac2_follow" type="bobac2_follow_node" name="bobac2_follow_node">
+		<remap from="follow_vel" to="cmd_vel"/>
+	</node>
+</launch>
