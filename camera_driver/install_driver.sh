@@ -1,5 +1,7 @@
 #!/bin/bash
-##install openni2
+#sudo
+test "$(whoami)" != 'root' && echo "permission denied" && exit 1
+#install openni2
 dpkg -s libopenni2-dev &>/dev/null || apt-get install libopenni2-dev -y
 install -T libOpenNi2.so /usr/lib/libOpenNi2.so && echo "openni2 installed"
 #install camera driver
