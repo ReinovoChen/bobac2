@@ -18,6 +18,7 @@
 
   <!-- bobac2 base & kinematics-->  
   <include file="$(find bobac2_base)/launch/bobac2_base.launch" /> 
+  <include file="$(find bobac2_joy)/launch/bobac2_joy.launch" /> 
   <include file="$(find rplidar_ros)/launch/bobac2_laser.launch" /> 
   <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
   <include file="$(find bobac2_slam)/launch/bobac2_$(arg slam_methods).launch" >   
