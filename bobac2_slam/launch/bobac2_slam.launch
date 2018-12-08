@@ -6,6 +6,16 @@
 
   <!--bobac2 model description-->
   <param name="robot_description" textfile="$(find bobac2_description)/urdf/bobac2_description.urdf" />
+
+  <node
+    name="joint_state_publisher"
+    pkg="joint_state_publisher"
+    type="joint_state_publisher" />
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="state_publisher" />
+
   <!-- bobac2 base & kinematics-->  
   <include file="$(find bobac2_base)/launch/bobac2_base.launch" /> 
   <include file="$(find rplidar_ros)/launch/bobac2_laser.launch" /> 

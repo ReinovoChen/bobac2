@@ -26,6 +26,6 @@ lethal_cost_threshold: 100
 
 #Configuration for the sensors that the costmap will use to update a map
 observation_sources: laser_scan_sensor
-laser_scan_sensor: {sensor_frame: laser_lada_link, data_type: LaserScan, topic: /scan, marking: true, clearing: true, max_obstacle_height: 20.0, min_obstacle_height: 0.0}
+laser_scan_sensor: {sensor_frame: laser_rada_Link, data_type: LaserScan, topic: /scan, marking: true, clearing: true, max_obstacle_height: 20.0, min_obstacle_height: 0.0}
 
 
