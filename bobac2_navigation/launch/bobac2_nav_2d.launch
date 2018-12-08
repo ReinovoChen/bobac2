@@ -1,0 +1,36 @@
+<!--                                                                            
+  bobac2 navigation:
+  - bobac2
+  - laser sensor
+  - map_server
+  - move_base
+  - amcl
+  - rviz view
+ --> 
+
+<launch>
+	<!--bobac2 model description-->
+  	<param name="robot_description" textfile="$(find bobac2_description)/urdf/bobac2_description.urdf" />
+
+  	<node
+	    name="joint_state_publisher"
+	    pkg="joint_state_publisher"
+	    type="joint_state_publisher" />
+  	<node
+	    name="robot_state_publisher"
+	    pkg="robot_state_publisher"
+	    type="state_publisher" />
+	<!--bobac2-->
+	<include file="$(find bobac2_base)/launch/bobac2_base.launch"/>
+	<!--laser sensor-->
+	<include file="$(find rplidar_ros)/launch/bobac2_laser.launch" /> 
+	<!--map_server-->
+	<include file="$(find bobac2_navigation)/launch/map_server.launch"/>
+	<!--move_base-->
+	<include file="$(find bobac2_navigation)/launch/move_base.launch"/>
+	<!--amcl-->
+	<include file="$(find bobac2_navigation)/launch/amcl.launch"/>
+	<!--  **************** Visualisation ****************  -->
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find bobac2_navigation)/rviz/robot_navigation.rviz"/>
+
+</launch>
